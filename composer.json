@@ -1,0 +1,13 @@
+{
+    "name": "module-bought-together",
+    "description": "Custom module to frequently products Bought Together.",
+    "type": "magento2-module",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+          "CustomModules\\BoughtTogether\\": ""
+        }
+    }
+}

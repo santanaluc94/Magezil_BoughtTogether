@@ -10,10 +10,13 @@ use Magento\Framework\Url\Helper\Data;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Framework\Registry;
 use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Catalog\Model\ProductFactory;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductFactory;
 use CustomModules\BoughtTogether\Helper\Data as CustomHelper;
+use Magento\Framework\View\Element\BlockFactory;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Block\Product\ListProduct;
 
-class Items extends \Magento\Catalog\Block\Product\ListProduct
+class Items extends ListProduct
 {
     /**
      * @var CollectionFactory
@@ -36,6 +39,24 @@ class Items extends \Magento\Catalog\Block\Product\ListProduct
     protected $productFactory;
 
     /**
+     * @var CustomHelper
+     */
+    protected $helper;
+
+    /**
+     * @var BlockFactory
+     */
+
+    private $blockFactory;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
+     * constructor items
+     *
      * @param Context $context
      * @param PostHelper $postDataHelper
      * @param Resolver $layerResolver
@@ -45,6 +66,8 @@ class Items extends \Magento\Catalog\Block\Product\ListProduct
      * @param Registry $registry
      * @param CustomerSession $customerSession
      * @param ProductFactory $productFactory
+     * @param CustomHelper $helper
+     * @param BlockFactory $blockFactory
      * @param array $data
      */
     public function __construct(
@@ -58,6 +81,8 @@ class Items extends \Magento\Catalog\Block\Product\ListProduct
         CustomerSession $customerSession,
         ProductFactory $productFactory,
         CustomHelper $helper,
+        BlockFactory $blockFactory,
+        StoreManagerInterface $storeManager,
         $data = []
     ) {
         parent::__construct(
@@ -73,38 +98,54 @@ class Items extends \Magento\Catalog\Block\Product\ListProduct
         $this->customerSession = $customerSession;
         $this->productFactory = $productFactory;
         $this->helper = $helper;
+        $this->blockFactory = $blockFactory;
+        $this->storeManager = $storeManager;
     }
 
-    /**
-     * get Current Product
-     */
-    public function getCurrentProduct()
+    public function _prepareLayout()
     {
-        return $this->registry->registry('current_product');
+        if ($this->helper->hasBoughtTogetherTitle()) {
+            $this->setData('block_title', $this->helper->getBoughtTogetherTitle());
+        } else {
+            $this->setData('block_title', __('Frequently Bought Together'));
+        }
+
+        return $this;
     }
 
     /**
      * get frequently items bought together
      *
      * @param integer $id
+     * @return ProductFactory
      */
-    public function getFrequentlyBoughtTogether(int $id)
+    public function getBoughtTogetherCollection($id)
     {
         // get order collection
         $ordersCollection = $this->orderCollectionFactory->create();
         $orders = $ordersCollection->addAttributeToSelect('*');
 
-        // get array with most items bought together
-        $mostBought = $this->getMostBoughtTogether($id, $orders);
+        // $id = (int) $this->getCurrentProduct()->getId();
 
-        $orderItems = [];
-        foreach ($mostBought as $itemId => $qty) {
-            // insert product in array
-            $orderItems[] = $this->getItemBoughtTogether($itemId);
+        // get array with most items bought together
+        $mostBoughtId = $this->getMostBoughtTogether($id, $orders);
+
+        $collection = $this->productFactory->create();
+        $collection->addMinimalPrice()
+            ->addIdFilter($mostBoughtId)
+            ->addFinalPrice()
+            ->addTaxPercents()
+            ->addAttributeToSelect('*')
+            ->addStoreFilter($this->storeManager->getStore()->getId());
+
+
+        // set admin qty to show in front
+        if ($this->helper->hasBoughtTogetherProductsQty()) {
+            $collection->setPageSize((int) $this->helper->getBoughtTogetherProductsQty());
         }
 
         // return array with products sorted
-        return $orderItems;
+        return $collection;
     }
 
     /**
@@ -123,23 +164,19 @@ class Items extends \Magento\Catalog\Block\Product\ListProduct
                         continue;
                     }
 
-                    $orderItems[] = $item->getProductId();
+                    // check array has item. If has item, sum with value with current value order. Else insert the current value in array
+                    $orderItems[$item->getProductId()] = isset($orderItems[$item->getProductId()]) ? (int) $orderItems[$item->getProductId()] + (int) $item->getQtyOrdered() : (int) $item->getQtyOrdered();
                 }
             }
         }
-        // count which are the most bought items grouped by id
-        $mostBought = array_count_values($orderItems);
 
         // sord the most bought items
-        arsort($mostBought);
+        arsort($orderItems);
 
-        // set admin qty to show in front
-        if ($this->helper->hasBoughtTogetherProductsQty()) {
-            $qty = $this->helper->getBoughtTogetherProductsQty();
-            $mostBought = array_slice($mostBought, 0, $qty, true);
-        }
+        // get only id in array index
+        $orderItems = array_keys($orderItems);
 
-        return $mostBought;
+        return $orderItems;
     }
 
     /**
@@ -161,17 +198,18 @@ class Items extends \Magento\Catalog\Block\Product\ListProduct
     }
 
     /**
-     * get product repository by product id
-     *
-     * @param int $productId
-     * @return ProductFactory
+     * get Current Product
      */
-    private function getItemBoughtTogether(int $productId)
+    public function getCurrentProduct()
     {
-        $productFactory = $this->productFactory->create();
-        $product = $productFactory->load($productId);
-
-        return $product;
+        return (int) $this->registry->registry('current_product')->getId();
     }
 
+    public function getListingBlock($id)
+    {
+        return $this->blockFactory
+            ->createBlock(ListProduct::class)
+            ->setCollection($this->getBoughtTogetherCollection($id))
+            ->setTemplate('CustomModules_BoughtTogether::product/list.phtml');
+    }
 }

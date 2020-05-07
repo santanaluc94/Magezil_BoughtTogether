@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="content.aside">
+            <block class="CustomModules\BoughtTogether\Block\Product\Items" name="frequently_bought_together" template="CustomModules_BoughtTogether::product/list.phtml"/>
+        </referenceBlock>
+    </body>
+</page>

@@ -1,0 +1,28 @@
+<?php
+
+/** @var \CustomModules\BoughtTogether\Block\Product\Items $block */
+
+$_helper = $this->helper(\CustomModules\BoughtTogether\Helper\Data::class);
+
+?>
+
+<?php if ($_helper->isEnabled()) : ?>
+    <h1><?= $block->getBlockTitle() ?></h1>
+    <?= $block->getListingBlock((int) $block->getCurrentProduct())->toHtml() ?>
+<?php endif; ?>
+<!--
+<script type="text/x-magento-init">
+    {
+        "*":
+        {
+            "CustomModules_BoughtTogether/js/items-bought-together": {},
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "wishlist": {
+                        "component": "Magento_Wishlist/js/view/wishlist"
+                    }
+                }
+            }
+        }
+    }
+</script> -->

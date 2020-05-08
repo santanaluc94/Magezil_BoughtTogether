@@ -7,6 +7,15 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\ScopeInterface;
 
+/**
+ * Class Data
+ *
+ * @category Magento
+ * @package  CustomModules_BoughtTogether
+ * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
+ * @license  NO-LICENSE #
+ * @link     http://github.com/santanaluc94
+ */
 class Data extends AbstractHelper
 {
     const MODULE_ENABLE = 'custom_bought_together/general/enable';
@@ -14,18 +23,24 @@ class Data extends AbstractHelper
     const BOUGHT_TOGETHER_QUANTITY = 'custom_bought_together/general/products_qty';
 
     /**
+     * Scope Config
+     *
      * @var ScopeConfigInterface
      */
     protected $scopeConfig;
 
     /**
+     * Store Manager
+     *
      * @var StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @param ScopeConfigInterface $scopeConfig
-     * @param StoreManagerInterface $storeManager
+     * Helper Data Constructor
+     *
+     * @param ScopeConfigInterface  $scopeConfig
+     * @param StoreManagerInterface  $storeManager
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,

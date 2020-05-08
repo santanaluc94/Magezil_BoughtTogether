@@ -86,19 +86,19 @@ class Items extends ListProduct
     /**
      * Constructor Frequently Bought Together
      *
-     * @param Context $context
-     * @param PostHelper $postDataHelper
-     * @param Resolver $layerResolver
-     * @param CategoryRepositoryInterface $categoryRepository
-     * @param Data $urlHelper
-     * @param CollectionFactory $orderCollectionFactory
-     * @param Registry $registry
-     * @param CustomerSession $customerSession
-     * @param ProductFactory $productFactory
-     * @param CustomHelper $helper
-     * @param BlockFactory $blockFactory
-     * @param StoreManagerInterface $storeManager
-     * @param array $data
+     * @param Context  $context
+     * @param PostHelper  $postDataHelper
+     * @param Resolver  $layerResolver
+     * @param CategoryRepositoryInterface  $categoryRepository
+     * @param Data  $urlHelper
+     * @param CollectionFactory  $orderCollectionFactory
+     * @param Registry  $registry
+     * @param CustomerSession  $customerSession
+     * @param ProductFactory  $productFactory
+     * @param CustomHelper  $helper
+     * @param BlockFactory  $blockFactory
+     * @param StoreManagerInterface  $storeManager
+     * @param array  $data
      */
     public function __construct(
         Context $context,
@@ -145,6 +145,8 @@ class Items extends ListProduct
 
     /**
      * Get frequently items bought together
+     *
+     * @return ProductFactory
      */
     public function _getProductCollection()
     {
@@ -178,6 +180,8 @@ class Items extends ListProduct
 
     /**
      * Get frequently items bought together
+     *
+     * @return array
      */
     private function getMostBoughtTogether(int $id, $orders): array
     {
@@ -208,6 +212,8 @@ class Items extends ListProduct
 
     /**
      * Has item in these orders
+     *
+     * @return boolean
      */
     private function hasItemInOrder(int $id, $order): bool
     {

@@ -16,46 +16,75 @@ use Magento\Framework\View\Element\BlockFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Block\Product\ListProduct;
 
+/**
+ * Class Items
+ *
+ * @category Magento
+ * @package  CustomModules_BoughtTogether
+ * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
+ * @license  NO-LICENSE #
+ * @link     http://github.com/santanaluc94
+ */
 class Items extends ListProduct
 {
     /**
+     * Template
+     *
+     * @var string
+     */
+    protected $template = "CustomModules_BoughtTogether::product/list.phtml";
+
+    /**
+     * Order Collection Factory
+     *
      * @var CollectionFactory
      */
     protected $orderCollectionFactory;
 
     /**
+     * Registry
+     *
      * @var Registry
      */
     protected $registry;
 
     /**
+     * Customer Session
+     *
      * @var CustomerSession
      */
     protected $customerSession;
 
     /**
+     * Product Collection Factory
+     *
      * @var ProductFactory
      */
     protected $productFactory;
 
     /**
+     * Frequently Bought Together Config Helper
+     *
      * @var CustomHelper
      */
     protected $helper;
 
     /**
+     * Block Factory
+     *
      * @var BlockFactory
      */
-
-    private $blockFactory;
+    protected $blockFactory;
 
     /**
+     * Store Manager
+     *
      * @var StoreManagerInterface
      */
-    private $storeManager;
+    protected $storeManager;
 
     /**
-     * constructor items
+     * Constructor Frequently Bought Together
      *
      * @param Context $context
      * @param PostHelper $postDataHelper
@@ -68,6 +97,7 @@ class Items extends ListProduct
      * @param ProductFactory $productFactory
      * @param CustomHelper $helper
      * @param BlockFactory $blockFactory
+     * @param StoreManagerInterface $storeManager
      * @param array $data
      */
     public function __construct(
@@ -114,30 +144,28 @@ class Items extends ListProduct
     }
 
     /**
-     * get frequently items bought together
-     *
-     * @param integer $id
-     * @return ProductFactory
+     * Get frequently items bought together
      */
-    public function getBoughtTogetherCollection($id)
+    public function _getProductCollection()
     {
         // get order collection
         $ordersCollection = $this->orderCollectionFactory->create();
         $orders = $ordersCollection->addAttributeToSelect('*');
 
-        // $id = (int) $this->getCurrentProduct()->getId();
+        // get current product id
+        $productId = (int) $this->getCurrentProduct()->getId();
 
         // get array with most items bought together
-        $mostBoughtId = $this->getMostBoughtTogether($id, $orders);
+        $mostBoughtId = $this->getMostBoughtTogether($productId, $orders);
 
         $collection = $this->productFactory->create();
         $collection->addMinimalPrice()
             ->addIdFilter($mostBoughtId)
             ->addFinalPrice()
             ->addTaxPercents()
+            ->addAttributeToFilter('status', '1')
             ->addAttributeToSelect('*')
             ->addStoreFilter($this->storeManager->getStore()->getId());
-
 
         // set admin qty to show in front
         if ($this->helper->hasBoughtTogetherProductsQty()) {
@@ -149,10 +177,7 @@ class Items extends ListProduct
     }
 
     /**
-     * get frequently items bought together
-     *
-     * @param integer $id
-     * @return array
+     * Get frequently items bought together
      */
     private function getMostBoughtTogether(int $id, $orders): array
     {
@@ -164,13 +189,15 @@ class Items extends ListProduct
                         continue;
                     }
 
-                    // check array has item. If has item, sum with value with current value order. Else insert the current value in array
-                    $orderItems[$item->getProductId()] = isset($orderItems[$item->getProductId()]) ? (int) $orderItems[$item->getProductId()] + (int) $item->getQtyOrdered() : (int) $item->getQtyOrdered();
+                    // Check array has item. If has item, sum with value with current value order. Else insert the current value in array
+                    $orderItems[$item->getProductId()] = isset($orderItems[$item->getProductId()]) ?
+                        (int) $orderItems[$item->getProductId()] + (int) $item->getQtyOrdered() :
+                        (int) $item->getQtyOrdered();
                 }
             }
         }
 
-        // sord the most bought items
+        // sort the most bought items
         arsort($orderItems);
 
         // get only id in array index
@@ -180,11 +207,7 @@ class Items extends ListProduct
     }
 
     /**
-     * has item in these orders
-     *
-     * @param integer $id
-     * @param $order
-     * @return boolean
+     * Has item in these orders
      */
     private function hasItemInOrder(int $id, $order): bool
     {
@@ -198,18 +221,18 @@ class Items extends ListProduct
     }
 
     /**
-     * get Current Product
+     * Get Current Product
      */
     public function getCurrentProduct()
     {
-        return (int) $this->registry->registry('current_product')->getId();
+        return $this->registry->registry('current_product');
     }
 
-    public function getListingBlock($id)
+    public function getListingBlock()
     {
         return $this->blockFactory
             ->createBlock(ListProduct::class)
-            ->setCollection($this->getBoughtTogetherCollection($id))
-            ->setTemplate('CustomModules_BoughtTogether::product/list.phtml');
+            ->setCollection($this->getLoadedProductCollection())
+            ->setTemplate($this->template);
     }
 }

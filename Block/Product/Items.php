@@ -84,7 +84,7 @@ class Items extends ListProduct
     protected $storeManager;
 
     /**
-     * Constructor Frequently Bought Together
+     * Constructor Items
      *
      * @param Context  $context
      * @param PostHelper  $postDataHelper

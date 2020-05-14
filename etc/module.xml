@@ -3,6 +3,7 @@
     <module name="CustomModules_BoughtTogether" setup_version="1.0.0" />
     <sequence>
         <module name="Magento_Sales" />
+        <module name="Magento_Customer" />
         <module name="Magento_Catalog" />
     </sequence>
 </config>

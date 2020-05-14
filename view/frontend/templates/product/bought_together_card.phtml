@@ -1,0 +1,126 @@
+<?php
+
+/** @var \CustomModules\BoughtTogether\Block\Product\Items $block */
+
+use CustomModules\BoughtTogether\Helper\Data;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
+use Magento\Framework\App\Action\Action;
+
+$_helper = $this->helper(Data::class);
+$_product = $block->getCurrentProduct();
+
+$type = 'bought-together';
+$image = 'category_page_list';
+$templateType = ReviewRendererInterface::SHORT_VIEW;
+
+if ($_helper->hasBoughtTogetherTitle()) {
+    $title = $_helper->getBoughtTogetherTitle();
+} else {
+    $title = __('Frequently Bought Together:');
+}
+$items = $block->getFrequentlyBoughtTogether((int) $_product->getId());
+?>
+
+<?php if ($_helper->isEnabled()) : ?>
+    <?php if (!empty($items)) : ?>
+        <div class="block <?= $type ?>">
+
+            <div class="block-title title">
+                <strong id="block-<?= $type ?>-heading" role="heading" aria-level="2"><?= $block->escapeHtml($title) ?></strong>
+            </div>
+            <div class="block-content content" aria-labelledby="block-<?= $type ?>-heading">
+                <div class="block-actions">
+                    <?= $block->escapeHtml(__('Check items to add to the cart or')) ?>
+                    <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together"><span id="button_select_all_bought_together"><?= $block->escapeHtml(__('select all')) ?></span></button>
+                    <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addto') ?>" method="post">
+                        <button type="submit" class="action select" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
+                        <input id="product_ids" name="productIds" type="hidden"/>
+                    </form>
+                </div>
+
+                <div class="products wrapper grid products-grid products-<?= $type ?>">
+                    <ol class="products list items product-items">
+                        <?php foreach ($items as $_item) : ?>
+                            <li class="item product product-item">
+                                <div class="product-item-info">
+                                    <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
+                                    <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product photo product-item-photo">
+                                        <?= $block->getImage($_item, $image)->toHtml() ?>
+                                    </a>
+
+                                    <div class="product details product-item-details">
+                                        <strong class="product name product-item-name"><a class="product-item-link" title="<?= $block->escapeHtmlAttr($_item->getName()) ?>" href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>">
+                                                <?= $block->escapeHtml($_item->getName()) ?></a>
+                                        </strong>
+
+                                        <!-- Product Price -->
+                                        <?= /* @noEscape */ $block->getProductPrice($_item) ?>
+
+                                        <?php if ($templateType) : ?>
+                                            <?= $block->getReviewsSummaryHtml($_item, $templateType) ?>
+                                        <?php endif; ?>
+
+                                        <?php if (!$_item->getRequiredOptions()) : ?>
+                                            <div class="field choice bought-together">
+                                                <input type="checkbox" class="checkbox bought-together" id="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>" name="similar_products[]" value="<?= $block->escapeHtmlAttr($_item->getId()) ?>" />
+                                                <label class="label" for="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>"><span><?= $block->escapeHtml(__('Add to Cart')) ?></span></label>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php if ($addToBlock = $block->getChildBlock('addto')) : ?>
+                                            <?= $addToBlock->setProduct($_item)->getChildHtml() ?>
+                                        <?php endif; ?>
+
+                                        <div class="product-item-inner">
+                                            <div class="product actions product-item-actions">
+                                                <div class="actions-primary">
+                                                    <?php if ($_item->isSaleable()) : ?>
+                                                        <?php $postParams = $block->getAddToCartPostParams($_item); ?>
+                                                        <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtmlAttr($_item->getSku()) ?>" action="<?= $block->escapeUrl($postParams['action']) ?>" method="post">
+                                                            <input type="hidden" name="product" value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
+                                                            <input type="hidden" name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                            <?= $block->getBlockHtml('formkey') ?>
+                                                            <button type="submit" title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>" class="action tocart primary">
+                                                                <span><?= $block->escapeHtml(__('Add to Cart')) ?></span>
+                                                            </button>
+                                                        </form>
+                                                    <?php else : ?>
+                                                        <?php if ($_item->isAvailable()) : ?>
+                                                            <div class="stock available"><span><?= $block->escapeHtml(__('In stock')) ?></span></div>
+                                                        <?php else : ?>
+                                                            <div class="stock unavailable"><span><?= $block->escapeHtml(__('Out of stock')) ?></span></div>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div data-role="add-to-links" class="actions-secondary">
+                                                    <?php if ($addToBlock = $block->getChildBlock('addto')) : ?>
+                                                        <?= $addToBlock->setProduct($_item)->getChildHtml() ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        <?php endforeach ?>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <script type="text/x-magento-init">
+            {
+                "*":
+                {
+                    "CustomModules_BoughtTogether/js/carouselBoughtTogether": {},
+                    "Magento_Ui/js/core/app": {
+                        "components": {
+                            "wishlist": {
+                                "component": "Magento_Wishlist/js/view/wishlist"
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+    <?php endif; ?>
+<?php endif; ?>

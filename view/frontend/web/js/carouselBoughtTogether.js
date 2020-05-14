@@ -35,13 +35,24 @@ define([
         }
     }
 
-    // Insert products id in array
-    let insertInArray = document.getElementsByClassName('block bought-together')[0].getElementsByClassName('price-box price-final_price');
+    // Insert product ids in input to add to cart
+    let productIds = $('#product_ids').val();
 
-    insertInArray.onclick = function () {
-
-        // $("div:checkbox[name=type]:checked").each(function () {
-        //     yourArray.push($(this).val());
-        // });
+    if (productIds) {
+        productIds = productIds.split(',');
+    } else {
+        productIds = [];
     }
+
+    $('.checkbox.bought-together').click(function (e) {
+        let productId = e.target.value;
+
+        if (productIds.includes(productId)) {
+            productIds.splice(productIds.indexOf(productId), 1);
+        } else {
+            productIds.push(productId);
+        }
+
+        $('#product_ids').value = productIds.toString();
+    });
 });

@@ -1,7 +1,7 @@
 var config = {
     map: {
         '*': {
-            itemsBoughtTogether: 'CustomModules_BoughtTogether/js/items-bought-together'
+            carouselBoughtTogether: 'CustomModules_BoughtTogether/js/carouselBoughtTogether'
         }
     }
 };

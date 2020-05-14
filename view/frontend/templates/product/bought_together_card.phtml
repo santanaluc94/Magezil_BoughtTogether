@@ -34,7 +34,7 @@ $items = $block->getFrequentlyBoughtTogether((int) $_product->getId());
                     <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together"><span id="button_select_all_bought_together"><?= $block->escapeHtml(__('select all')) ?></span></button>
                     <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addto') ?>" method="post">
                         <button type="submit" class="action select" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
-                        <input id="product_ids" name="productIds"/>
+                        <input id="product_ids" name="productIds" type="hidden"/>
                     </form>
                 </div>
 
@@ -112,7 +112,7 @@ $items = $block->getFrequentlyBoughtTogether((int) $_product->getId());
             {
                 "*":
                 {
-                    "CustomModules_BoughtTogether/js/items-bought-together": {},
+                    "CustomModules_BoughtTogether/js/carouselBoughtTogether": {},
                     "Magento_Ui/js/core/app": {
                         "components": {
                             "wishlist": {

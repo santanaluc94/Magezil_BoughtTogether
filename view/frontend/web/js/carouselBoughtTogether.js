@@ -53,6 +53,6 @@ define([
             productIds.push(productId);
         }
 
-        $('#product_ids').value = productIds.toString();
+        document.getElementById('product_ids').value = productIds.toString();
     });
 });

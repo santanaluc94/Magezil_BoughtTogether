@@ -5,3 +5,5 @@ Module Enable,Habilitar Módulo
 Frequently Bought Together:,Frequentemente Comprados Juntos:
 General Configuration,Configurações Gerais
 Custom Modules,Módulos Personalizados
+Show Logged User,Exibir Usuário Logado
+Show block only when the user is logged in.,Exibir bloco apenas quando o usuário estiver logados.

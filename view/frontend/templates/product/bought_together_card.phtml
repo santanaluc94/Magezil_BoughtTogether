@@ -7,7 +7,6 @@ use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Framework\App\Action\Action;
 
 $_helper = $this->helper(Data::class);
-$_product = $block->getCurrentProduct();
 
 $type = 'bought-together';
 $image = 'category_page_list';
@@ -18,7 +17,7 @@ if ($_helper->hasBoughtTogetherTitle()) {
 } else {
     $title = __('Frequently Bought Together:');
 }
-$items = $block->getFrequentlyBoughtTogether((int) $_product->getId());
+$items = $block->getFrequentlyBoughtTogether();
 ?>
 
 <?php if ($block->isShowBlock()) : ?>

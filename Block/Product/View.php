@@ -10,7 +10,8 @@ use Magento\Framework\Url\Helper\Data;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
 use Magento\Framework\Registry;
 use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Catalog\Model\ProductFactory;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductFactory;
+use Magento\Store\Model\StoreManagerInterface;
 use CustomModules\BoughtTogether\Helper\Data as CustomHelper;
 use Magento\Framework\App\ObjectManager;
 
@@ -26,24 +27,39 @@ use Magento\Framework\App\ObjectManager;
 class View extends \Magento\Catalog\Block\Product\ListProduct
 {
     /**
+     * Order Collection Factory
+     *
      * @var CollectionFactory
      */
     protected $orderCollectionFactory;
 
     /**
+     * Registry
+     *
      * @var Registry
      */
     protected $registry;
 
     /**
+     * Customer Session
+     *
      * @var CustomerSession
      */
     protected $customerSession;
 
     /**
+     * Product Factory
+     *
      * @var ProductFactory
      */
     protected $productFactory;
+
+    /**
+     * Store Manager
+     *
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
 
     /**
      * View constructor.
@@ -57,6 +73,8 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
      * @param Registry $registry
      * @param CustomerSession $customerSession
      * @param ProductFactory $productFactory
+     * @param CustomHelper $helper
+     * @param StoreManagerInterface $storeManager
      * @param array $data
      */
     public function __construct(
@@ -70,6 +88,7 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
         CustomerSession $customerSession,
         ProductFactory $productFactory,
         CustomHelper $helper,
+        StoreManagerInterface $storeManager,
         $data = []
     ) {
         parent::__construct(
@@ -85,10 +104,11 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
         $this->customerSession = $customerSession;
         $this->productFactory = $productFactory;
         $this->helper = $helper;
+        $this->storeManager = $storeManager;
     }
 
     /**
-     * get Current Product
+     * Get Current Product
      */
     public function getCurrentProduct()
     {
@@ -96,33 +116,45 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
     }
 
     /**
-     * get frequently items bought together
+     * Get frequently items bought together
      *
-     * @param integer $id
+     * @return ProductFactory
      */
-    public function getFrequentlyBoughtTogether(int $id)
+    public function getFrequentlyBoughtTogether()
     {
         // get order collection
         $ordersCollection = $this->orderCollectionFactory->create();
         $orders = $ordersCollection->addAttributeToSelect('*');
 
-        // get array with most items bought together
-        $mostBought = $this->getMostBoughtTogether($id, $orders);
+        // get current product id
+        $productId = (int) $this->getCurrentProduct()->getId();
 
-        $orderItems = [];
-        foreach ($mostBought as $itemId => $qty) {
-            // insert product in array
-            $orderItems[] = $this->getItemBoughtTogether($itemId);
+        // get array with most items bought together
+        $mostBought = $this->getMostBoughtTogether($productId, $orders);
+
+        $collection = $this->productFactory->create();
+        $collection->addMinimalPrice()
+            ->addIdFilter($mostBought)
+            ->addFinalPrice()
+            ->addTaxPercents()
+            ->addAttributeToFilter('status', '1')
+            ->addAttributeToSelect('*')
+            ->addStoreFilter($this->storeManager->getStore()->getId());
+
+        // set admin qty to show in front
+        if ($this->helper->hasBoughtTogetherProductsQty()) {
+            $collection->setPageSize((int) $this->helper->getBoughtTogetherProductsQty());
         }
 
         // return array with products sorted
-        return $orderItems;
+        return $collection;
     }
 
     /**
-     * get frequently items bought together
+     * Get frequently items bought together
      *
      * @param integer $id
+     * @param $orders
      * @return array
      */
     private function getMostBoughtTogether(int $id, $orders): array
@@ -135,27 +167,25 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
                         continue;
                     }
 
-                    $orderItems[] = $item->getProductId();
+                    // Check array has item. If has item, sum with value with current value order. Else insert the current value in array
+                    $orderItems[$item->getProductId()] = isset($orderItems[$item->getProductId()]) ?
+                        (int) $orderItems[$item->getProductId()] + (int) $item->getQtyOrdered() :
+                        (int) $item->getQtyOrdered();
                 }
             }
         }
-        // count which are the most bought items grouped by id
-        $mostBought = array_count_values($orderItems);
 
         // sord the most bought items
-        arsort($mostBought);
+        arsort($orderItems);
 
-        // set admin qty to show in front
-        if ($this->helper->hasBoughtTogetherProductsQty()) {
-            $qty = $this->helper->getBoughtTogetherProductsQty();
-            $mostBought = array_slice($mostBought, 0, $qty, true);
-        }
+        // get only id in array index
+        $orderItems = array_keys($orderItems);
 
-        return $mostBought;
+        return $orderItems;
     }
 
     /**
-     * has item in these orders
+     * Has item in these orders.
      *
      * @param integer $id
      * @param $order
@@ -170,20 +200,6 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
         }
 
         return false;
-    }
-
-    /**
-     * get product repository by product id
-     *
-     * @param int $productId
-     * @return ProductFactory
-     */
-    private function getItemBoughtTogether(int $productId)
-    {
-        $productFactory = $this->productFactory->create();
-        $product = $productFactory->load($productId);
-
-        return $product;
     }
 
     /**

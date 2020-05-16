@@ -13,6 +13,7 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use CustomModules\BoughtTogether\Helper\Data as CustomHelper;
+use Magento\Framework\App\ObjectManager;
 
 /**
  * Class View
@@ -30,7 +31,7 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
      *
      * @var CollectionFactory
      */
-    protected $_orderCollectionFactory;
+    protected $orderCollectionFactory;
 
     /**
      * Registry
@@ -61,6 +62,8 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
     protected $storeManager;
 
     /**
+     * View constructor.
+     *
      * @param Context $context
      * @param PostHelper $postDataHelper
      * @param Resolver $layerResolver
@@ -96,8 +99,8 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
             $urlHelper,
             $data
         );
-        $this->_orderCollectionFactory = $orderCollectionFactory;
-        $this->_registry = $registry;
+        $this->orderCollectionFactory = $orderCollectionFactory;
+        $this->registry = $registry;
         $this->customerSession = $customerSession;
         $this->productFactory = $productFactory;
         $this->helper = $helper;
@@ -109,7 +112,7 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
      */
     public function getCurrentProduct()
     {
-        return $this->_registry->registry('current_product');
+        return $this->registry->registry('current_product');
     }
 
     /**
@@ -120,7 +123,7 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
     public function getFrequentlyBoughtTogether()
     {
         // get order collection
-        $ordersCollection = $this->_orderCollectionFactory->create();
+        $ordersCollection = $this->orderCollectionFactory->create();
         $orders = $ordersCollection->addAttributeToSelect('*');
 
         // get current product id
@@ -197,5 +200,34 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
         }
 
         return false;
+    }
+
+    /**
+     * Is show block in product page
+     *
+     * @return boolean
+     */
+    public function isShowBlock(): bool
+    {
+        // Check module is enable in admin
+        if (!$this->helper->isEnabled()) {
+            return false;
+        }
+
+        // Check config is enable and if is true, show block only user is logged in
+        if ($this->helper->isBoughtTogetherLoggedIn()) {
+            // Customer session is not working by dependency injection
+            $this->customerSession = ObjectManager::getInstance()
+                ->create(CustomerSession::class);
+
+            return $this->customerSession->isLoggedIn();
+        }
+
+        // Show block if product were bought together
+        if (count($this->getFrequentlyBoughtTogether($this->getCurrentProduct()->getId())) === 0) {
+            return false;
+        }
+
+        return true;
     }
 }

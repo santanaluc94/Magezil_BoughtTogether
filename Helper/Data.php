@@ -19,6 +19,7 @@ use Magento\Store\Model\ScopeInterface;
 class Data extends AbstractHelper
 {
     const MODULE_ENABLE = 'custom_bought_together/general/enable';
+    const BOUGHT_TOGETHER_LOGGED_IN = 'custom_bought_together/general/user_logged';
     const BOUGHT_TOGETHER_TITLE = 'custom_bought_together/general/title';
     const BOUGHT_TOGETHER_QUANTITY = 'custom_bought_together/general/products_qty';
 
@@ -59,6 +60,17 @@ class Data extends AbstractHelper
     {
         return $this->scopeConfig->isSetFlag(self::MODULE_ENABLE, ScopeInterface::SCOPE_WEBSITE);
     }
+
+    /**
+     * Is bought together must be logged in
+     *
+     * @return boolean
+     */
+    public function isBoughtTogetherLoggedIn(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::BOUGHT_TOGETHER_LOGGED_IN, ScopeInterface::SCOPE_WEBSITE);
+    }
+
 
     /**
      * Has Frequently Bought Together Title

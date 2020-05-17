@@ -26,20 +26,21 @@ $items = $block->getFrequentlyBoughtTogether();
         <div class="block-title title">
             <strong id="block-<?= $type ?>-heading" role="heading" aria-level="2"><?= $block->escapeHtml($title) ?></strong>
         </div>
-        <div class="block-content content" aria-labelledby="block-<?= $type ?>-heading">
-            <div class="block-actions">
-                <?= $block->escapeHtml(__('Check items to add to the cart or')) ?>
-                <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together"><span id="button_select_all_bought_together"><?= $block->escapeHtml(__('select all')) ?></span></button>
-                <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addto') ?>" method="post">
-                    <button type="submit" class="action select" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
-                    <input id="product_ids" name="productIds" type="hidden" />
-                </form>
-            </div>
 
+        <div class="block-actions">
+            <?= $block->escapeHtml(__('Check items to add to the cart or')) ?>
+            <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together"><span id="button_select_all_bought_together"><?= $block->escapeHtml(__('select all')) ?></span></button>
+            <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addto') ?>" method="post">
+                <button type="submit" class="action to cart primary" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
+                <input id="product_ids" name="productIds" type="hidden" />
+            </form>
+        </div>
+
+        <div class="block-content content block-content-bought-together" aria-labelledby="block-<?= $type ?>-heading">
             <div class="products wrapper grid products-grid products-<?= $type ?>">
                 <ol class="products list items product-items">
                     <?php foreach ($items as $_item) : ?>
-                        <li class="item product product-item">
+                        <li class="card-list item product product-item">
                             <div class="product-item-info">
                                 <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
                                 <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product photo product-item-photo">
@@ -78,7 +79,7 @@ $items = $block->getFrequentlyBoughtTogether();
                                                         <input type="hidden" name="product" value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
                                                         <input type="hidden" name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
                                                         <?= $block->getBlockHtml('formkey') ?>
-                                                        <button type="submit" title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>" class="action tocart primary">
+                                                        <button type="submit" title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>" class="action tocart primary add-to-cart">
                                                             <span><?= $block->escapeHtml(__('Add to Cart')) ?></span>
                                                         </button>
                                                     </form>

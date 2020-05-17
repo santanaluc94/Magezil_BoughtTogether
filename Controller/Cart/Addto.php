@@ -12,7 +12,7 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
 
 /**
- * Class View
+ * Class Addto
  *
  * @category Magento
  * @package  CustomModules_BoughtTogether

@@ -5,13 +5,7 @@
     </head>
     <body>
         <referenceBlock name="content.aside">
-            <block class="CustomModules\BoughtTogether\Block\Product\View" name="frequently_bought_together" template="CustomModules_BoughtTogether::product/bought_together_card.phtml">
-                <block class="Magento\Catalog\Block\Product\View\AddTo\Compare" name="view.addto.compare" after="view.addto.wishlist" template="Magento_Catalog::product/view/addto/compare.phtml">
-                    <arguments>
-                        <argument name="addToCompareViewModel" xsi:type="object">Magento\Catalog\ViewModel\Product\Checker\AddToCompareAvailability</argument>
-                    </arguments>
-                </block>
-            </block>
+            <block class="CustomModules\BoughtTogether\Block\Product\View" name="frequently_bought_together" template="CustomModules_BoughtTogether::product/bought_together_card.phtml" />
         </referenceBlock>
     </body>
 </page>

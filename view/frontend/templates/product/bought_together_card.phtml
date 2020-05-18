@@ -109,8 +109,8 @@ $items = $block->getFrequentlyBoughtTogether();
                                                     <?php if ($_helper->isShowCompare()) : ?>
                                                         <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toCompare') ?>" data-role="tocart-form">
                                                             <input name="id" value="<?= $_item->getId(); ?>" hidden />
-                                                            <button type="submit" href="#" class="action tocompare wishlist">
-                                                                <span class="wishlist"><?= __('Add to Compare') ?></span>
+                                                            <button type="submit" href="#" class="action tocompare compare">
+                                                                <span class="compare"><?= __('Add to Compare') ?></span>
                                                             </button>
                                                         </form>
                                                     <?php endif; ?>

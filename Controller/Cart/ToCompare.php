@@ -96,7 +96,7 @@ class ToCompare extends Action
         }
 
         // Add product to comparison list
-        $this->listCompare->addProducts($productId);
+        $this->listCompare->addProduct($productId);
 
         $this->messageManager->addSuccess('You added ' . $product->getName() . ' to the <a href="' . $this->urlInterface->getUrl('catalog/product_compare/') . '">comparison list.</a>');
 

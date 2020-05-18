@@ -1,93 +1,138 @@
-/* Button sellect all */
-button#select_all_bought_together {
-    background: none;
-    padding: 0;
-    border: none;
-    cursor: pointer;
-    font-weight: normal;
-    color: #006bb4;
-}
+    /* Button sellect all */
+    button#select_all_bought_together {
+        background: none;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+        font-weight: normal;
+        color: #006bb4;
+    }
 
-/* Button add all products selected in cart */
-button#add_all_bought_together {
-    background: #006bb4;
-    border: 1px solid #006bb4;
-    color: #ffffff;
-    font-size: 1.4rem;
-    border-radius: 0;
-    line-height: 1;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    white-space: nowrap;
-    float: right;
-}
+    /* Button add all products selected in cart */
+    button#add_all_bought_together {
+        background: #006bb4;
+        border: 1px solid #006bb4;
+        color: #ffffff;
+        font-size: 1.4rem;
+        border-radius: 0;
+        line-height: 1;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        white-space: nowrap;
+        float: right;
+    }
 
-/* Product Card */
-li.card-list {
-    width: 20% !important;
-}
+    /* Product Card */
+    li.card-list {
+        width: 20% !important;
+    }
 
-div.block-content-bought-together {
-    margin-top: 5%;
-}
+    div.block-content-bought-together {
+        margin-top: 5%;
+    }
 
-div.product-item-info {
-    width: 240px;
-}
+    div.product-item-info {
+        width: 240px;
+    }
 
-.product-item-inner {
-    margin: 9px 0 0 -1px;
-}
+    .product-item-inner {
+        margin: 9px 0 0 -1px;
+    }
 
-.product-item-inner::before {
-    background: #ffffff;
-    content: '';
-    height: 3px;
-    left: 0;
-    position: absolute;
-    top: -2px;
-    width: 100%;
-    z-index: -1;
-}
+    .product-item-inner::before {
+        background: #ffffff;
+        content: '';
+        height: 3px;
+        left: 0;
+        position: absolute;
+        top: -2px;
+        width: 100%;
+        z-index: -1;
+    }
 
-button.add-to-cart {
-    margin-top: 25px;
-}
+    /* Button add to cart */
+    button.add-to-cart {
+        margin-top: 25px;
+    }
 
-button.wishlist {
-    height: 35px;
-    width: 35px;
-    background: none;
-    border: none;
-    margin-top: 25px;
-}
+    /* Button add to wishlist */
+    button.wishlist {
+        height: 35px;
+        width: 35px;
+        background: none;
+        border: none;
+        margin-top: 25px;
+    }
 
-button.wishlist::before {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
-    line-height: 16px;
-    color: inherit;
-    font-family: 'luma-icons';
-    margin: -2px 5px 0 0;
-    vertical-align: middle;
-    display: inline-block;
-    font-weight: normal;
-    overflow: hidden;
-    speak: none;
-    text-align: center;
-    position: absolute;
-    right: 10%;
-    top: 60%;
-}
+    button.wishlist::before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+        line-height: 16px;
+        color: inherit;
+        font-family: 'luma-icons';
+        margin: -2px 5px 0 0;
+        vertical-align: middle;
+        display: inline-block;
+        font-weight: normal;
+        overflow: hidden;
+        speak: none;
+        text-align: center;
+        position: absolute;
+        right: 10%;
+        top: 60%;
+    }
 
-span.wishlist {
-    border: 0;
-    clip: rect(0, 0, 0, 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-}
+    span.wishlist {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    /* Button add to compare */
+    div.compare {
+        position: absolute;
+    }
+
+    button.compare {
+        height: 35px;
+        width: 35px;
+        background: none;
+        border: none;
+        margin: -57px 0 0 35px;
+    }
+
+    button.compare::before {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 16px;
+        line-height: 16px;
+        color: inherit;
+        font-family: 'luma-icons';
+        margin: -2px -20px;
+        vertical-align: middle;
+        display: inline-block;
+        font-weight: normal;
+        overflow: hidden;
+        speak: none;
+        text-align: center;
+        position: absolute;
+        right: 30px;
+        top: -23px;
+    }
+
+    span.compare {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }

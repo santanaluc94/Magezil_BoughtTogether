@@ -230,4 +230,11 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
 
         return true;
     }
+
+    public function getProductByItem($productId)
+    {
+        return \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\Magento\Catalog\Api\ProductRepositoryInterface::class)
+            ->getById($productId);
+    }
 }

@@ -37,6 +37,20 @@
                     </depends>
                 </field>
             </group>
+            <group id="cards_configuration" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cards Configuration</label>
+                <field id="show_wishlist" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Wishlist</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show button add to wishlist in frequently bought together list products.</comment>
+                    <depends>
+                        <field id="custom_bought_together/general/enable">1</field>
+                    </depends>
+                </field>
+                <depends>
+                    <field id="custom_bought_together/general/enable">1</field>
+                </depends>
+            </group>
         </section>
     </system>
 </config>

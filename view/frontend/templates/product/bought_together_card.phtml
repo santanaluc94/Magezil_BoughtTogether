@@ -5,6 +5,7 @@
 use CustomModules\BoughtTogether\Helper\Data;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Framework\App\Action\Action;
+use Magento\Wishlist\Helper\Data as WishlistData;
 
 $_helper = $this->helper(Data::class);
 
@@ -91,7 +92,19 @@ $items = $block->getFrequentlyBoughtTogether();
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             </div>
-                                            <div data-role="add-to-links" class="actions-secondary">
+                                            <div data-role="add-to-links" class="actions-secondary" style="position: relative;">
+                                                <?php if ($this->helper(WishlistData::class)->isAllow()) : ?>
+                                                    <?php if ($_helper->isShowWishlist()) : ?>
+                                                        <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toWishlist') ?>" data-role="tocart-form">
+                                                            <input name="id" value="<?= $_item->getId(); ?>" hidden />
+                                                            <button type="submit" href="#" class="action towishlist wishlist">
+                                                                <span class="wishlist"><?= __('Add to Wish List') ?></span>
+                                                            </button>
+                                                        </form>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+
+
                                                 <?php if ($addToBlock = $block->getChildBlock('addto')) : ?>
                                                     <?= $addToBlock->setProduct($_item)->getChildHtml() ?>
                                                 <?php endif; ?>
@@ -108,17 +121,17 @@ $items = $block->getFrequentlyBoughtTogether();
     </div>
     <script type="text/x-magento-init">
         {
-                "*":
-                {
-                    "CustomModules_BoughtTogether/js/carouselBoughtTogether": {},
-                    "Magento_Ui/js/core/app": {
-                        "components": {
-                            "wishlist": {
-                                "component": "Magento_Wishlist/js/view/wishlist"
-                            }
+            "*":
+            {
+                "CustomModules_BoughtTogether/js/carouselBoughtTogether": {},
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "wishlist": {
+                            "component": "Magento_Wishlist/js/view/wishlist"
                         }
                     }
                 }
             }
-        </script>
+        }
+    </script>
 <?php endif; ?>

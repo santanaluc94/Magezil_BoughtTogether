@@ -22,6 +22,7 @@ class Data extends AbstractHelper
     const BOUGHT_TOGETHER_LOGGED_IN = 'custom_bought_together/general/user_logged';
     const BOUGHT_TOGETHER_TITLE = 'custom_bought_together/general/title';
     const BOUGHT_TOGETHER_QUANTITY = 'custom_bought_together/general/products_qty';
+    const SHOW_WISHLIST = 'custom_bought_together/cards_configuration/show_wishlist';
 
     /**
      * Scope Config
@@ -110,5 +111,15 @@ class Data extends AbstractHelper
     public function getBoughtTogetherProductsQty(): string
     {
         return $this->scopeConfig->getValue(self::BOUGHT_TOGETHER_QUANTITY, ScopeInterface::SCOPE_WEBSITE);
+    }
+
+    /**
+     * Is show wishlist in bought together cards
+     *
+     * @return boolean
+     */
+    public function isShowWishlist(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::SHOW_WISHLIST, ScopeInterface::SCOPE_WEBSITE);
     }
 }

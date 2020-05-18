@@ -4,16 +4,15 @@ namespace CustomModules\BoughtTogether\Controller\Cart;
 
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
-use Magento\Wishlist\Model\WishlistFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\App\ObjectManager;
-use Magento\Customer\Model\Session;
+use Magento\Catalog\Model\Product\Compare\ListCompare;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
- * Class ToWishlist
+ * Class ToCompare
  *
  * @category Magento
  * @package  CustomModules_BoughtTogether
@@ -21,15 +20,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
  * @license  NO-LICENSE #
  * @link     http://github.com/santanaluc94
  */
-class ToWishlist extends Action
+class ToCompare extends Action
 {
-    /**
-     * Whishlist Factory
-     *
-     * @var WishlistFactory
-     */
-    protected $wishlistRepository;
-
     /**
      * Product Repository Interface
      *
@@ -52,26 +44,43 @@ class ToWishlist extends Action
     protected $messageManager;
 
     /**
-     * Add To Wishlist constructor.
+     * List Compare
+     *
+     * @var ListCompare
+     */
+    protected $listCompare;
+
+    /**
+     * Url Interface
+     *
+     * @var UrlInterface
+     */
+    protected $urlInterface;
+
+    /**
+     * Add To Compare constructor.
      *
      * @param Context $context
-     * @param WishlistFactory $wishlistRepository
      * @param ProductRepositoryInterface $productRepository
      * @param ResultFactory $result
      * @param ManagerInterface $messageManager
+     * @param ListCompare $listCompare
+     * @param UrlInterface $urlInterface
      */
     public function __construct(
         Context $context,
-        WishlistFactory $wishlistRepository,
         ProductRepositoryInterface $productRepository,
         ResultFactory $result,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        ListCompare $listCompare,
+        UrlInterface $urlInterface
     ) {
         parent::__construct($context);
-        $this->wishlistRepository = $wishlistRepository;
         $this->productRepository = $productRepository;
         $this->resultRedirect = $result;
         $this->messageManager = $messageManager;
+        $this->listCompare = $listCompare;
+        $this->urlInterface = $urlInterface;
     }
 
     public function execute()
@@ -86,24 +95,12 @@ class ToWishlist extends Action
             $product = null;
         }
 
-        $session = ObjectManager::getInstance()
-            ->create(Session::class);
+        // Add product to comparison list
+        $this->listCompare->addProducts($productId);
 
-        if ($session->isLoggedIn()) {
-            $customerId = $session->getCustomer()->getId();
-            $wishlist = $this->wishlistRepository->create()
-                ->loadByCustomerId($customerId, true);
+        $this->messageManager->addSuccess('You added ' . $product->getName() . ' to the <a href="' . $this->urlInterface->getUrl('catalog/product_compare/') . '">comparison list.</a>');
 
-            $wishlist->addNewItem($product);
-            $wishlist->save();
-
-            $resultRedirect->setPath('wishlist');
-            return $resultRedirect;
-        }
-
-        $this->messageManager->addError(__('You must login or register to add items to your wishlist.'));
-
-        $resultRedirect->setPath('customer/account/login');
+        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
         return $resultRedirect;
     }
 }

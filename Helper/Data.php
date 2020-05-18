@@ -23,6 +23,7 @@ class Data extends AbstractHelper
     const BOUGHT_TOGETHER_TITLE = 'custom_bought_together/general/title';
     const BOUGHT_TOGETHER_QUANTITY = 'custom_bought_together/general/products_qty';
     const SHOW_WISHLIST = 'custom_bought_together/cards_configuration/show_wishlist';
+    const SHOW_COMPARE = 'custom_bought_together/cards_configuration/show_compare';
 
     /**
      * Scope Config
@@ -121,5 +122,15 @@ class Data extends AbstractHelper
     public function isShowWishlist(): bool
     {
         return $this->scopeConfig->isSetFlag(self::SHOW_WISHLIST, ScopeInterface::SCOPE_WEBSITE);
+    }
+
+    /**
+     * Is show compare in bought together cards
+     *
+     * @return boolean
+     */
+    public function isShowCompare(): bool
+    {
+        return $this->scopeConfig->isSetFlag(self::SHOW_COMPARE, ScopeInterface::SCOPE_WEBSITE);
     }
 }

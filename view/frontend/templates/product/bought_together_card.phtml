@@ -93,21 +93,28 @@ $items = $block->getFrequentlyBoughtTogether();
                                                 <?php endif; ?>
                                             </div>
                                             <div data-role="add-to-links" class="actions-secondary" style="position: relative;">
-                                                <?php if ($this->helper(WishlistData::class)->isAllow()) : ?>
-                                                    <?php if ($_helper->isShowWishlist()) : ?>
-                                                        <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toWishlist') ?>" data-role="tocart-form">
+                                                <div class="wishlist">
+                                                    <?php if ($this->helper(WishlistData::class)->isAllow()) : ?>
+                                                        <?php if ($_helper->isShowWishlist()) : ?>
+                                                            <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toWishlist') ?>" data-role="tocart-form">
+                                                                <input name="id" value="<?= $_item->getId(); ?>" hidden />
+                                                                <button type="submit" href="#" class="action towishlist wishlist">
+                                                                    <span class="wishlist"><?= __('Add to Wish List') ?></span>
+                                                                </button>
+                                                            </form>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="compare">
+                                                    <?php if ($_helper->isShowCompare()) : ?>
+                                                        <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toCompare') ?>" data-role="tocart-form">
                                                             <input name="id" value="<?= $_item->getId(); ?>" hidden />
-                                                            <button type="submit" href="#" class="action towishlist wishlist">
-                                                                <span class="wishlist"><?= __('Add to Wish List') ?></span>
+                                                            <button type="submit" href="#" class="action tocompare compare">
+                                                                <span class="compare"><?= __('Add to Compare') ?></span>
                                                             </button>
                                                         </form>
                                                     <?php endif; ?>
-                                                <?php endif; ?>
-
-
-                                                <?php if ($addToBlock = $block->getChildBlock('addto')) : ?>
-                                                    <?= $addToBlock->setProduct($_item)->getChildHtml() ?>
-                                                <?php endif; ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

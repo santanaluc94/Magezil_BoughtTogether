@@ -91,7 +91,7 @@ class Addto extends Action
 
         $productIds = $this->getRequest()->getParam('productIds');
 
-        if (isset($this->getRequest()->getParam('qty'))) {
+        if ($this->getRequest()->getParam('qty') !== null) {
             $productQty = $this->getRequest()->getParam('qty');
 
             if ($productQty <= 0) {

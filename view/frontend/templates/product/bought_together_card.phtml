@@ -77,6 +77,14 @@ $items = $block->getFrequentlyBoughtTogether();
                                                 <?php if ($_item->isSaleable()) : ?>
                                                     <?php $postParams = $block->getAddToCartPostParams($_item); ?>
                                                     <form data-role="tocart-form" data-product-sku="<?= $block->escapeHtmlAttr($_item->getSku()) ?>" action="<?= $block->escapeUrl($postParams['action']) ?>" method="post">
+                                                        <?php if ($_helper->isShowQtyProducts()) : ?>
+                                                            <div class="field qty">
+                                                                <label class="label" for="qty"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
+                                                                <div class="control">
+                                                                    <input type="number" name="qty" id="qty" min="0" value="<?= $block->getProductDefaultQty() * 1 ?>" title="<?= $block->escapeHtmlAttr(__('Qty')) ?>" class="input-text qty" data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>" />
+                                                                </div>
+                                                            </div>
+                                                        <?php endif; ?>
                                                         <input type="hidden" name="product" value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
                                                         <input type="hidden" name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
                                                         <?= $block->getBlockHtml('formkey') ?>

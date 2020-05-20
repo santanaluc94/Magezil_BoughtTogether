@@ -10,6 +10,7 @@ use Magento\Checkout\Model\Cart;
 use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class Addto
@@ -84,15 +85,31 @@ class Addto extends Action
 
     public function execute()
     {
+        // Redirect to back
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+
         $productIds = $this->getRequest()->getParam('productIds');
-        $selectedItems = explode(",", $productIds);
+
+        if (isset($this->getRequest()->getParam('qty'))) {
+            $productQty = $this->getRequest()->getParam('qty');
+
+            if ($productQty <= 0) {
+                throw new LocalizedException(__('Invalid product qty.'));
+                return $resultRedirect;
+            }
+        } else {
+            $productQty = 1;
+        }
 
         try {
+            $selectedItems = explode(",", $productIds);
+
             foreach ($selectedItems as $key => $productId) {
                 $params = [
                     'form_key' => $this->formKey->getFormKey(),
-                    'product_id' => $productId, //product Id
-                    'qty'   => 1 //quantity of product
+                    'product_id' => $productId,
+                    'qty'   => $productQty
                 ];
                 $_product = $this->product->create()->load($productId);
 
@@ -101,7 +118,6 @@ class Addto extends Action
             }
             $this->cart->save();
             $status = 1;
-
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             $this->messageManager->addException($e, __('%1', $e->getMessage()));
             $status = 0;
@@ -110,9 +126,6 @@ class Addto extends Action
             $status = 0;
         }
 
-        // Redirect to back
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
 
         return $resultRedirect;
     }

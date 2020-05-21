@@ -36,7 +36,7 @@ define([
     }
 
     // Insert product ids in input to add to cart
-    let productIds = $('#product_ids').val();
+    let productIds = document.getElementById('product_ids').value;
 
     if (productIds) {
         productIds = productIds.split(',');
@@ -44,7 +44,9 @@ define([
         productIds = [];
     }
 
-    $('.checkbox.bought-together').click(function (e) {
+    document.body.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('checkbox-bought-together')) return;
+
         let productId = e.target.value;
 
         if (productIds.includes(productId)) {
@@ -53,6 +55,6 @@ define([
             productIds.push(productId);
         }
 
-        document.getElementById('product_ids').value = productIds.toString();
+        document.getElementById('product_ids').value = productIds;
     });
 });

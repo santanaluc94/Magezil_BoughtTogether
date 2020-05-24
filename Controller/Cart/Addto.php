@@ -11,6 +11,7 @@ use Magento\Catalog\Model\ProductFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Addto
@@ -59,6 +60,13 @@ class Addto extends Action
     protected $urlInterface;
 
     /**
+     * Logger Interface
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * Addto constructor.
      *
      * @param Context $context
@@ -66,6 +74,7 @@ class Addto extends Action
      * @param Cart $cart
      * @param ProductFactory $product
      * @param ManagerInterface $managerInterface
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -73,7 +82,8 @@ class Addto extends Action
         Cart $cart,
         ProductFactory $product,
         ManagerInterface $managerInterface,
-        UrlInterface $urlInterface
+        UrlInterface $urlInterface,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->formKey = $formKey;
@@ -81,8 +91,14 @@ class Addto extends Action
         $this->product = $product;
         $this->messageManager = $managerInterface;
         $this->urlInterface = $urlInterface;
+        $this->logger = $logger;
     }
 
+    /**
+     * Add product to cart
+     *
+     * @return ResultFactory
+     */
     public function execute()
     {
         // Redirect to back
@@ -111,17 +127,25 @@ class Addto extends Action
                     'product_id' => $productId,
                     'qty'   => $productQty
                 ];
+
                 $_product = $this->product->create()->load($productId);
 
                 $this->cart->addProduct($_product, $params);
-                $this->messageManager->addSuccess('You added ' . $_product->getName() . ' to your <a href="' . $this->urlInterface->getUrl('checkout/cart/') . '">shopping cart.</a>');
+                $this->messageManager->addSuccess(
+                    'You added %1 to your <a href="%2">shopping cart.</a>',
+                    $_product->getName(),
+                    $this->urlInterface->getUrl('checkout/cart/')
+                );
             }
+
             $this->cart->save();
             $status = 1;
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
+            $this->logger->error($e->getMessage());
             $this->messageManager->addException($e, __('%1', $e->getMessage()));
             $status = 0;
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
             $this->messageManager->addException($e, __('error.'));
             $status = 0;
         }

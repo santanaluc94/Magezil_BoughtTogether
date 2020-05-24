@@ -11,6 +11,7 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ToWishlist
@@ -52,6 +53,13 @@ class ToWishlist extends Action
     protected $messageManager;
 
     /**
+     * Logger Interface
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * Add To Wishlist constructor.
      *
      * @param Context $context
@@ -59,30 +67,42 @@ class ToWishlist extends Action
      * @param ProductRepositoryInterface $productRepository
      * @param ResultFactory $result
      * @param ManagerInterface $messageManager
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
         WishlistFactory $wishlistRepository,
         ProductRepositoryInterface $productRepository,
         ResultFactory $result,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->wishlistRepository = $wishlistRepository;
         $this->productRepository = $productRepository;
         $this->resultRedirect = $result;
         $this->messageManager = $messageManager;
+        $this->logger = $logger;
     }
 
+    /**
+     * Add product to wishlist
+     *
+     * @return ResultFactory
+     */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect = $this->resultRedirect->create(
+            ResultFactory::TYPE_REDIRECT
+        );
 
         $productId = $this->getRequest()->getParam('id');
 
         try {
             $product = $this->productRepository->getById($productId);
         } catch (NoSuchEntityException $e) {
+            $this->logger->error($e->getMessage());
+            $this->messageManager->addException($e, __('%1', $e->getMessage()));
             $product = null;
         }
 
@@ -101,7 +121,9 @@ class ToWishlist extends Action
             return $resultRedirect;
         }
 
-        $this->messageManager->addError(__('You must login or register to add items to your wishlist.'));
+        $this->messageManager->addError(
+            __('You must login or register to add items to your wishlist.')
+        );
 
         $resultRedirect->setPath('customer/account/login');
         return $resultRedirect;

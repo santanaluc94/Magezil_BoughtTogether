@@ -61,7 +61,10 @@ class Data extends AbstractHelper
      */
     public function isEnabled(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::MODULE_ENABLE, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::MODULE_ENABLE,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -71,9 +74,11 @@ class Data extends AbstractHelper
      */
     public function isBoughtTogetherLoggedIn(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::BOUGHT_TOGETHER_LOGGED_IN, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::BOUGHT_TOGETHER_LOGGED_IN,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
-
 
     /**
      * Has Frequently Bought Together Title
@@ -82,7 +87,10 @@ class Data extends AbstractHelper
      */
     public function hasBoughtTogetherTitle(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::BOUGHT_TOGETHER_TITLE, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::BOUGHT_TOGETHER_TITLE,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -92,7 +100,10 @@ class Data extends AbstractHelper
      */
     public function getBoughtTogetherTitle(): string
     {
-        return $this->scopeConfig->getValue(self::BOUGHT_TOGETHER_TITLE, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue(
+            self::BOUGHT_TOGETHER_TITLE,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -102,7 +113,10 @@ class Data extends AbstractHelper
      */
     public function hasBoughtTogetherProductsQty(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::BOUGHT_TOGETHER_QUANTITY, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::BOUGHT_TOGETHER_QUANTITY,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -112,7 +126,10 @@ class Data extends AbstractHelper
      */
     public function getBoughtTogetherProductsQty(): string
     {
-        return $this->scopeConfig->getValue(self::BOUGHT_TOGETHER_QUANTITY, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue(
+            self::BOUGHT_TOGETHER_QUANTITY,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -122,7 +139,10 @@ class Data extends AbstractHelper
      */
     public function isShowWishlist(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::SHOW_WISHLIST, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::SHOW_WISHLIST,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -132,7 +152,10 @@ class Data extends AbstractHelper
      */
     public function isShowCompare(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::SHOW_COMPARE, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::SHOW_COMPARE,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 
     /**
@@ -142,6 +165,9 @@ class Data extends AbstractHelper
      */
     public function isShowQtyProducts(): bool
     {
-        return $this->scopeConfig->isSetFlag(self::SHOW_QTY_PRODUCTS, ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->isSetFlag(
+            self::SHOW_QTY_PRODUCTS,
+            ScopeInterface::SCOPE_WEBSITE
+        );
     }
 }

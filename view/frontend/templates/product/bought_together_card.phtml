@@ -6,6 +6,7 @@ use CustomModules\BoughtTogether\Helper\Data;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Wishlist\Helper\Data as WishlistData;
+use Magento\Catalog\Helper\Product\Compare;
 
 $_helper = $this->helper(Data::class);
 
@@ -67,10 +68,6 @@ $items = $block->getFrequentlyBoughtTogether();
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if ($addToBlock = $block->getChildBlock('addto')) : ?>
-                                        <?= $addToBlock->setProduct($_item)->getChildHtml() ?>
-                                    <?php endif; ?>
-
                                     <div class="product-item-inner">
                                         <div class="product actions product-item-actions">
                                             <div class="actions-primary">
@@ -100,29 +97,21 @@ $items = $block->getFrequentlyBoughtTogether();
                                                     <?php endif; ?>
                                                 <?php endif; ?>
                                             </div>
+                                        </div>
+                                        <div class="product-item-actions">
                                             <div data-role="add-to-links" class="actions-secondary" style="position: relative;">
-                                                <div class="wishlist">
-                                                    <?php if ($this->helper(WishlistData::class)->isAllow()) : ?>
-                                                        <?php if ($_helper->isShowWishlist()) : ?>
-                                                            <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toWishlist') ?>" data-role="tocart-form">
-                                                                <input name="id" value="<?= $_item->getId(); ?>" hidden />
-                                                                <button type="submit" href="#" class="action towishlist wishlist">
-                                                                    <span class="wishlist"><?= __('Add to Wish List') ?></span>
-                                                                </button>
-                                                            </form>
-                                                        <?php endif; ?>
+                                                <?php if ($this->helper(WishlistData::class)->isAllow()) : ?>
+                                                    <?php if ($_helper->isShowWishlist()) : ?>
+                                                        <a href="#" data-post='<?= $this->helper(WishlistData::class)->getAddParams($_item) ?>' class="action towishlist" data-action="add-to-wishlist" title="<?= $block->escapeHtmlAttr(__('Add to Wish List')) ?>">
+                                                            <span><?= __('Add to Wish List') ?></span>
+                                                        </a>
                                                     <?php endif; ?>
-                                                </div>
-                                                <div class="compare">
-                                                    <?php if ($_helper->isShowCompare()) : ?>
-                                                        <form method="post" action="<?= $block->getUrl('boughtTogether/cart/toCompare') ?>" data-role="tocart-form">
-                                                            <input name="id" value="<?= $_item->getId(); ?>" hidden />
-                                                            <button type="submit" href="#" class="action tocompare compare">
-                                                                <span class="compare"><?= __('Add to Compare') ?></span>
-                                                            </button>
-                                                        </form>
-                                                    <?php endif; ?>
-                                                </div>
+                                                <?php endif; ?>
+                                                <?php if ($_helper->isShowCompare()) : ?>
+                                                    <a href="#" data-post="<?= $this->helper(Compare::class)->getAddUrl($_item) ?>" class="action tocompare" title="<?= $block->escapeHtmlAttr(__('Add to Compare')) ?>" data-role="add-to-links">
+                                                        <span><?= __('Add to Compare') ?></span>
+                                                    </a>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>

@@ -136,3 +136,8 @@
         position: absolute;
         width: 1px;
     }
+
+    input.qty {
+        text-align: center;
+        width: 54px;
+    }

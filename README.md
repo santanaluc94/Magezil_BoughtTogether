@@ -1,4 +1,4 @@
-### Frequently Bought Together
+## Frequently Bought Together
 
 This module adds a block in product page, which insert all products that were bought together with the product on the page. It is possible to edit the title and how many products will display in this block. To enable this module, follow these steps:
   - Step 1: Magento admin -> Stores -> Settings -> Configurations
@@ -7,7 +7,7 @@ This module adds a block in product page, which insert all products that were bo
 
 ![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/module.jpg)
 
-#### General settings
+### General settings
 
 This module provides some settings in admin:
   - Show block only when the user is logged in;
@@ -16,7 +16,7 @@ This module provides some settings in admin:
 
 ![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/general-settings.jpg)
 
-#### Cards settings
+### Cards settings
 
 This module provides some settings to cards in this block to:
   - Show button add to wishlist in list products;
@@ -24,4 +24,14 @@ This module provides some settings to cards in this block to:
   - Show quantity products to add to cart in list products.
 
 ![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/cards-settings.jpg)
+
+## Frontend
+
+The results of the product page follows below with all settings enabled.
+
+Grid:
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/block-frontend.jpg)
+
+Liting product:
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/listing-product.jpg)
 

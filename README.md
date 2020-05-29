@@ -5,7 +5,7 @@ This module adds a block in product page, which insert all products that were bo
   - Setp 2: Tab _Custom Modules_ -> Section _Frequently Bought Together_ -> Group _General Configuration_
   - Setp 3: Enable Module = Yes
 
-![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughTogether/master/Readme/module.jpg)
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/module.jpg)
 
 #### General settings
 
@@ -14,7 +14,7 @@ This module provides some settings in admin:
   - Edit title block;
   - Quantity of products to display on frontend (to do not apply this filter, just leave it empty).
 
-![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughTogether/master/Readme/general-settings.jpg)
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/general-settings.jpg)
 
 #### Cards settings
 
@@ -23,5 +23,5 @@ This module provides some settings to cards in this block to:
   - Show button add to compare in list products;
   - Show quantity products to add to cart in list products.
 
-![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughTogether/master/Readme/cards-settings.jpg)
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/cards-settings.jpg)
 

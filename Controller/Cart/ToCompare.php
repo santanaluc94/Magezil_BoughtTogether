@@ -11,6 +11,7 @@ use Magento\Catalog\Model\Product\Compare\ListCompare;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\Controller\Result\Redirect;
 
 /**
  * Class ToCompare
@@ -23,59 +24,13 @@ use Psr\Log\LoggerInterface;
  */
 class ToCompare extends Action
 {
-    /**
-     * Product Repository Interface
-     *
-     * @var ProductRepositoryInterface
-     */
     protected $productRepository;
-
-    /**
-     * Result Factory
-     *
-     * @var ResultFactory
-     */
     protected $result;
-
-    /**
-     * Manager Interface
-     *
-     * @var ManagerInterface
-     */
     protected $messageManager;
-
-    /**
-     * List Compare
-     *
-     * @var ListCompare
-     */
     protected $listCompare;
-
-    /**
-     * Url Interface
-     *
-     * @var UrlInterface
-     */
     protected $urlInterface;
-
-    /**
-     * Logger Interface
-     *
-     * @var LoggerInterface
-     */
     protected $logger;
 
-    /**
-     * Add To Compare constructor.
-     *
-     * @param Context $context
-     * @param ProductRepositoryInterface $productRepository
-     * @param ResultFactory $result
-     * @param ManagerInterface $messageManager
-     * @param ListCompare $listCompare
-     * @param UrlInterface $urlInterface
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         Context $context,
         ProductRepositoryInterface $productRepository,
@@ -96,10 +51,8 @@ class ToCompare extends Action
 
     /**
      * Add product to add to compare
-     *
-     * @return ResultFactory
      */
-    public function execute()
+    public function execute(): Redirect
     {
         $resultRedirect = $this->resultRedirect->create(
             ResultFactory::TYPE_REDIRECT
@@ -109,22 +62,22 @@ class ToCompare extends Action
 
         try {
             $product = $this->productRepository->getById($productId);
+
+            // Add product to comparison list
+            $this->listCompare->addProduct($productId);
+
+            $this->messageManager->addSuccess(
+                __(
+                    'You added %1 to the <a href="%2">comparison list.</a>',
+                    $product->getName(),
+                    $this->urlInterface->getUrl('catalog/product_compare/')
+                )
+            );
         } catch (NoSuchEntityException $e) {
             $this->logger->error($e->getMessage());
-            $this->messageManager->addException($e, __('%1', $e->getMessage()));
+            $this->messageManager->addExceptionMessage($e, __('%1', $e->getMessage()));
             $product = null;
         }
-
-        // Add product to comparison list
-        $this->listCompare->addProduct($productId);
-
-        $this->messageManager->addSuccess(
-            __(
-                'You added %1 to the <a href="%2">comparison list.</a>',
-                $product->getName(),
-                $this->urlInterface->getUrl('catalog/product_compare/')
-            )
-        );
 
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());
         return $resultRedirect;

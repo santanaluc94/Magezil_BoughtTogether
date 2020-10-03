@@ -26,26 +26,9 @@ class Data extends AbstractHelper
     const SHOW_COMPARE = 'custom_bought_together/cards_configuration/show_compare';
     const SHOW_QTY_PRODUCTS = 'custom_bought_together/cards_configuration/qty_products';
 
-    /**
-     * Scope Config
-     *
-     * @var ScopeConfigInterface
-     */
     protected $scopeConfig;
-
-    /**
-     * Store Manager
-     *
-     * @var StoreManagerInterface
-     */
     protected $storeManager;
 
-    /**
-     * Helper Data Constructor
-     *
-     * @param ScopeConfigInterface  $scopeConfig
-     * @param StoreManagerInterface  $storeManager
-     */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager
@@ -56,8 +39,6 @@ class Data extends AbstractHelper
 
     /**
      * Check module is enable
-     *
-     * @return boolean
      */
     public function isEnabled(): bool
     {
@@ -69,8 +50,6 @@ class Data extends AbstractHelper
 
     /**
      * Is bought together must be logged in
-     *
-     * @return boolean
      */
     public function isBoughtTogetherLoggedIn(): bool
     {
@@ -82,8 +61,6 @@ class Data extends AbstractHelper
 
     /**
      * Has Frequently Bought Together Title
-     *
-     * @return boolean
      */
     public function hasBoughtTogetherTitle(): bool
     {
@@ -95,8 +72,6 @@ class Data extends AbstractHelper
 
     /**
      * Get Frequently Bought Together Title
-     *
-     * @return string
      */
     public function getBoughtTogetherTitle(): string
     {
@@ -108,8 +83,6 @@ class Data extends AbstractHelper
 
     /**
      * Has quantity Products of Frequently Bought Together
-     *
-     * @return boolean
      */
     public function hasBoughtTogetherProductsQty(): bool
     {
@@ -121,8 +94,6 @@ class Data extends AbstractHelper
 
     /**
      * Get quantity Products of Frequently Bought Together
-     *
-     * @return string
      */
     public function getBoughtTogetherProductsQty(): string
     {
@@ -134,8 +105,6 @@ class Data extends AbstractHelper
 
     /**
      * Is show wishlist in bought together cards
-     *
-     * @return boolean
      */
     public function isShowWishlist(): bool
     {
@@ -147,8 +116,6 @@ class Data extends AbstractHelper
 
     /**
      * Is show compare in bought together cards
-     *
-     * @return boolean
      */
     public function isShowCompare(): bool
     {
@@ -160,8 +127,6 @@ class Data extends AbstractHelper
 
     /**
      * Is show quantity products in bought together cards
-     *
-     * @return boolean
      */
     public function isShowQtyProducts(): bool
     {

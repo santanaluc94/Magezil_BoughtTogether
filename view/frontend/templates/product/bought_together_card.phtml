@@ -1,6 +1,8 @@
 <?php
 
-/** @var \CustomModules\BoughtTogether\Block\Product\Items $block */
+/**
+ *  @var \CustomModules\BoughtTogether\Block\Product\View $block
+ */
 
 use CustomModules\BoughtTogether\Helper\Data;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
@@ -19,6 +21,7 @@ if ($_helper->hasBoughtTogetherTitle()) {
 } else {
     $title = __('Frequently Bought Together:');
 }
+
 $items = $block->getFrequentlyBoughtTogether();
 ?>
 
@@ -32,9 +35,9 @@ $items = $block->getFrequentlyBoughtTogether();
         <div class="block-actions">
             <?= $block->escapeHtml(__('Check items to add to the cart or')) ?>
             <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together"><span id="button_select_all_bought_together"><?= $block->escapeHtml(__('select all')) ?></span></button>
-            <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addto') ?>" method="post">
+            <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addProductsSelectedInCart') ?>" method="post">
                 <button type="submit" class="action to cart primary" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
-                <input id="product_ids" name="productIds" type="hidden" />
+                <input id="product_ids" name="productIds" hidden />
             </form>
         </div>
 
@@ -44,7 +47,7 @@ $items = $block->getFrequentlyBoughtTogether();
                     <?php foreach ($items as $_item) : ?>
                         <li class="card-list item product product-item">
                             <div class="product-item-info">
-                                <?= /* @noEscape */ '<!-- ' . $image . '-->' ?>
+                                <?= '<!-- ' . $image . '-->' ?>
                                 <a href="<?= $block->escapeUrl($block->getProductUrl($_item)) ?>" class="product photo product-item-photo">
                                     <?= $block->getImage($_item, $image)->toHtml() ?>
                                 </a>
@@ -55,7 +58,7 @@ $items = $block->getFrequentlyBoughtTogether();
                                     </strong>
 
                                     <!-- Product Price -->
-                                    <?= /* @noEscape */ $block->getProductPrice($_item) ?>
+                                    <?= $block->getProductPrice($_item) ?>
 
                                     <?php if ($templateType) : ?>
                                         <?= $block->getReviewsSummaryHtml($_item, $templateType) ?>
@@ -63,7 +66,7 @@ $items = $block->getFrequentlyBoughtTogether();
 
                                     <?php if (!$_item->getRequiredOptions()) : ?>
                                         <div class="field choice bought-together">
-                                            <input type="checkbox" class="checkbox bought-together" id="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>" name="similar_products[]" value="<?= $block->escapeHtmlAttr($_item->getId()) ?>" />
+                                            <input type="checkbox" class="checkbox-bought-together" id="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>" name="similar_products[]" value="<?= $block->escapeHtmlAttr($_item->getId()) ?>" />
                                             <label class="label" for="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>"><span><?= $block->escapeHtml(__('Add to Cart')) ?></span></label>
                                         </div>
                                     <?php endif; ?>
@@ -78,12 +81,12 @@ $items = $block->getFrequentlyBoughtTogether();
                                                             <div class="field qty">
                                                                 <label class="label" for="qty"><span><?= $block->escapeHtml(__('Qty')) ?></span></label>
                                                                 <div class="control">
-                                                                    <input type="number" name="qty" id="qty" min="0" value="<?= $block->getProductDefaultQty() * 1 ?>" title="<?= $block->escapeHtmlAttr(__('Qty')) ?>" class="input-text qty" data-validate="<?= $block->escapeHtml(json_encode($block->getQuantityValidators())) ?>" />
+                                                                    <input type="number" name="qty" id="qty" min="1" value="1" title="<?= $block->escapeHtmlAttr(__('Qty')) ?>" class="input-text qty" />
                                                                 </div>
                                                             </div>
                                                         <?php endif; ?>
-                                                        <input type="hidden" name="product" value="<?= /* @noEscape */ $postParams['data']['product'] ?>">
-                                                        <input type="hidden" name="<?= /* @noEscape */ Action::PARAM_NAME_URL_ENCODED ?>" value="<?= /* @noEscape */ $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                        <input type="hidden" name="product" value="<?= $postParams['data']['product'] ?>">
+                                                        <input type="hidden" name="<?= Action::PARAM_NAME_URL_ENCODED ?>" value="<?= $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
                                                         <?= $block->getBlockHtml('formkey') ?>
                                                         <button type="submit" title="<?= $block->escapeHtmlAttr(__('Add to Cart')) ?>" class="action tocart primary add-to-cart">
                                                             <span><?= $block->escapeHtml(__('Add to Cart')) ?></span>
@@ -100,6 +103,7 @@ $items = $block->getFrequentlyBoughtTogether();
                                         </div>
                                         <div class="product-item-actions">
                                             <div data-role="add-to-links" class="actions-secondary" style="position: relative;">
+                                                <!-- Add Product to Wishlist  -->
                                                 <?php if ($this->helper(WishlistData::class)->isAllow()) : ?>
                                                     <?php if ($_helper->isShowWishlist()) : ?>
                                                         <a href="#" data-post='<?= $this->helper(WishlistData::class)->getAddParams($_item) ?>' class="action towishlist" data-action="add-to-wishlist" title="<?= $block->escapeHtmlAttr(__('Add to Wish List')) ?>">
@@ -107,8 +111,11 @@ $items = $block->getFrequentlyBoughtTogether();
                                                         </a>
                                                     <?php endif; ?>
                                                 <?php endif; ?>
+
+                                                <!-- Add Product to Comparison List -->
                                                 <?php if ($_helper->isShowCompare()) : ?>
-                                                    <a href="#" data-post="<?= $this->helper(Compare::class)->getAddUrl($_item) ?>" class="action tocompare" title="<?= $block->escapeHtmlAttr(__('Add to Compare')) ?>" data-role="add-to-links">
+                                                    <?php $compareHelper = $this->helper(Compare::class); ?>
+                                                    <a href="#" class="action tocompare" title="<?= $block->escapeHtml(__('Add to Compare')); ?>" aria-label="<?= $block->escapeHtml(__('Add to Compare')); ?>" data-post='<?= $compareHelper->getPostDataParams($_item); ?>' role="button">
                                                         <span><?= __('Add to Compare') ?></span>
                                                     </a>
                                                 <?php endif; ?>

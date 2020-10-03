@@ -7,13 +7,17 @@ use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Catalog\Model\Layer\Resolver;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Url\Helper\Data;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Framework\Registry;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductFactory;
-use Magento\Store\Model\StoreManagerInterface;
 use CustomModules\BoughtTogether\Helper\Data as CustomHelper;
-use Magento\Framework\App\ObjectManager;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Catalog\Block\Product\ListProduct;
+use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
+use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
+use Magento\Sales\Model\Order;
+use Magento\Catalog\Model\Product;
 
 /**
  * Class View
@@ -24,66 +28,22 @@ use Magento\Framework\App\ObjectManager;
  * @license  NO-LICENSE #
  * @link     http://github.com/santanaluc94
  */
-class View extends \Magento\Catalog\Block\Product\ListProduct
+class View extends ListProduct
 {
-    /**
-     * Order Collection Factory
-     *
-     * @var CollectionFactory
-     */
     protected $orderCollectionFactory;
-
-    /**
-     * Registry
-     *
-     * @var Registry
-     */
     protected $registry;
-
-    /**
-     * Customer Session
-     *
-     * @var CustomerSession
-     */
     protected $customerSession;
-
-    /**
-     * Product Factory
-     *
-     * @var ProductFactory
-     */
     protected $productFactory;
-
-    /**
-     * Store Manager
-     *
-     * @var StoreManagerInterface
-     */
     protected $storeManager;
+    protected $productRepository;
 
-    /**
-     * View constructor.
-     *
-     * @param Context $context
-     * @param PostHelper $postDataHelper
-     * @param Resolver $layerResolver
-     * @param CategoryRepositoryInterface $categoryRepository
-     * @param Data $urlHelper
-     * @param CollectionFactory $orderCollectionFactory
-     * @param Registry $registry
-     * @param CustomerSession $customerSession
-     * @param ProductFactory $productFactory
-     * @param CustomHelper $helper
-     * @param StoreManagerInterface $storeManager
-     * @param array $data
-     */
     public function __construct(
         Context $context,
         PostHelper $postDataHelper,
         Resolver $layerResolver,
         CategoryRepositoryInterface $categoryRepository,
         Data $urlHelper,
-        CollectionFactory $orderCollectionFactory,
+        OrderCollectionFactory $orderCollectionFactory,
         Registry $registry,
         CustomerSession $customerSession,
         ProductFactory $productFactory,
@@ -91,6 +51,12 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
         StoreManagerInterface $storeManager,
         $data = []
     ) {
+        $this->orderCollectionFactory = $orderCollectionFactory;
+        $this->registry = $registry;
+        $this->customerSession = $customerSession;
+        $this->productFactory = $productFactory;
+        $this->helper = $helper;
+        $this->storeManager = $storeManager;
         parent::__construct(
             $context,
             $postDataHelper,
@@ -99,28 +65,20 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
             $urlHelper,
             $data
         );
-        $this->orderCollectionFactory = $orderCollectionFactory;
-        $this->registry = $registry;
-        $this->customerSession = $customerSession;
-        $this->productFactory = $productFactory;
-        $this->helper = $helper;
-        $this->storeManager = $storeManager;
     }
 
     /**
      * Get Current Product
      */
-    public function getCurrentProduct()
+    public function getCurrentProduct(): Product
     {
         return $this->registry->registry('current_product');
     }
 
     /**
      * Get frequently items bought together
-     *
-     * @return ProductFactory
      */
-    public function getFrequentlyBoughtTogether()
+    public function getFrequentlyBoughtTogether(): ProductCollection
     {
         // get order collection
         $ordersCollection = $this->orderCollectionFactory->create();
@@ -152,12 +110,8 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
 
     /**
      * Get frequently items bought together
-     *
-     * @param integer $id
-     * @param $orders
-     * @return array
      */
-    private function getMostBoughtTogether(int $id, $orders): array
+    private function getMostBoughtTogether(int $id, OrderCollection $orders): array
     {
         $orderItems = [];
         foreach ($orders as $order) {
@@ -186,12 +140,8 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
 
     /**
      * Has item in these orders.
-     *
-     * @param integer $id
-     * @param $order
-     * @return boolean
      */
-    private function hasItemInOrder(int $id, $order): bool
+    private function hasItemInOrder(int $id, Order $order): bool
     {
         foreach ($order->getAllItems() as $item) {
             if ($id === (int) $item->getProductId()) {
@@ -204,8 +154,6 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
 
     /**
      * Is show block in product page
-     *
-     * @return boolean
      */
     public function isShowBlock(): bool
     {
@@ -216,10 +164,6 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
 
         // Check config is enable and if is true, show block only user is logged in
         if ($this->helper->isBoughtTogetherLoggedIn()) {
-            // Customer session is not working by dependency injection
-            $this->customerSession = ObjectManager::getInstance()
-                ->create(CustomerSession::class);
-
             return $this->customerSession->isLoggedIn();
         }
 
@@ -229,12 +173,5 @@ class View extends \Magento\Catalog\Block\Product\ListProduct
         }
 
         return true;
-    }
-
-    public function getProductByItem($productId)
-    {
-        return \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\Magento\Catalog\Api\ProductRepositoryInterface::class)
-            ->getById($productId);
     }
 }

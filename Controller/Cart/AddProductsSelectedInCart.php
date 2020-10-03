@@ -12,9 +12,10 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\Controller\Result\Redirect;
 
 /**
- * Class Addto
+ * Class AddProductsSelectedInCart
  *
  * @category Magento
  * @package  CustomModules_BoughtTogether
@@ -22,86 +23,39 @@ use Psr\Log\LoggerInterface;
  * @license  NO-LICENSE #
  * @link     http://github.com/santanaluc94
  */
-class Addto extends Action
+class AddProductsSelectedInCart extends Action
 {
-    /**
-     * Form key
-     *
-     * @var FormKey
-     */
     protected $formKey;
-
-    /**
-     * Cart
-     *
-     * @var Cart
-     */
     protected $cart;
-
-    /**
-     * Product Factory
-     *
-     * @var ProductFactory
-     */
     protected $product;
-
-    /**
-     * Message Manager
-     *
-     * @var ManagerInterface
-     */
     protected $messageManager;
-
-    /**
-     * Url Interface
-     *
-     * @var UrlInterface
-     */
     protected $urlInterface;
-
-    /**
-     * Logger Interface
-     *
-     * @var LoggerInterface
-     */
     protected $logger;
 
-    /**
-     * Addto constructor.
-     *
-     * @param Context $context
-     * @param FormKey $formKey
-     * @param Cart $cart
-     * @param ProductFactory $product
-     * @param ManagerInterface $managerInterface
-     * @param LoggerInterface $logger
-     */
     public function __construct(
         Context $context,
         FormKey $formKey,
         Cart $cart,
-        ProductFactory $product,
+        ProductFactory $productFactory,
         ManagerInterface $managerInterface,
         UrlInterface $urlInterface,
         LoggerInterface $logger
     ) {
-        parent::__construct($context);
         $this->formKey = $formKey;
         $this->cart = $cart;
-        $this->product = $product;
+        $this->productFactory = $productFactory;
         $this->messageManager = $managerInterface;
         $this->urlInterface = $urlInterface;
         $this->logger = $logger;
+        parent::__construct($context);
     }
 
     /**
      * Add product to cart
-     *
-     * @return ResultFactory
      */
-    public function execute()
+    public function execute(): Redirect
     {
-        // Redirect to back
+        // Redirect to latest url
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($this->_redirect->getRefererUrl());
 
@@ -121,35 +75,31 @@ class Addto extends Action
         try {
             $selectedItems = explode(",", $productIds);
 
-            foreach ($selectedItems as $key => $productId) {
+            $url = $this->urlInterface->getUrl('checkout/cart/');
+
+            foreach ($selectedItems as $productId) {
                 $params = [
                     'form_key' => $this->formKey->getFormKey(),
                     'product_id' => $productId,
                     'qty'   => $productQty
                 ];
 
-                $_product = $this->product->create()->load($productId);
+                $productFactory = $this->productFactory->create();
+                $product = $productFactory->load($productId);
 
-                $this->cart->addProduct($_product, $params);
-                $this->messageManager->addSuccess(
-                    'You added %1 to your <a href="%2">shopping cart.</a>',
-                    $_product->getName(),
-                    $this->urlInterface->getUrl('checkout/cart/')
-                );
+                $this->cart->addProduct($product, $params);
+                $message = __('You added ' . $product->getName() . ' to your <a href="' . $url . '">shopping cart.</a>');
+                $this->messageManager->addSuccess($message);
             }
 
             $this->cart->save();
-            $status = 1;
-        } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->logger->error($e->getMessage());
-            $this->messageManager->addException($e, __('%1', $e->getMessage()));
-            $status = 0;
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-            $this->messageManager->addException($e, __('error.'));
-            $status = 0;
+        } catch (LocalizedException $exception) {
+            $this->logger->error($exception->getMessage());
+            $this->messageManager->addExceptionMessage($exception, __('%1', $exception->getMessage()));
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+            $this->messageManager->addExceptionMessage($exception, __('error.'));
         }
-
 
         return $resultRedirect;
     }

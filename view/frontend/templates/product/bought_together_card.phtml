@@ -115,8 +115,8 @@ $items = $block->getFrequentlyBoughtTogether();
                                                 <!-- Add Product to Comparison List -->
                                                 <?php if ($_helper->isShowCompare()) : ?>
                                                     <?php $compareHelper = $this->helper(Compare::class); ?>
-                                                    <a href="#" class="action tocompare" title="<?= $block->escapeHtml(__('Add to Compare')); ?>" aria-label="<?= $block->escapeHtml(__('Add to Compare')); ?>" data-post='<?= $compareHelper->getPostDataParams($_item); ?>' role="button">
-                                                        <span><?= __('Add to Compare') ?></span>
+                                                    <a href="#" class="action tocompare" title="<?= $block->escapeHtml(__('Add to Compare List')); ?>" aria-label="<?= $block->escapeHtml(__('Add to Compare List')); ?>" data-post='<?= $compareHelper->getPostDataParams($_item); ?>' role="button">
+                                                        <span><?= __('Add to Compare List') ?></span>
                                                     </a>
                                                 <?php endif; ?>
                                             </div>

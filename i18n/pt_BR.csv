@@ -6,7 +6,15 @@ Frequently Bought Together:,Frequentemente Comprados Juntos:
 General Configuration,Configurações Gerais
 Custom Modules,Módulos Personalizados
 Show Logged User,Exibir Usuário Logado
-Show block only when the user is logged in.,Exibir bloco apenas quando o usuário estiver logados.
+Show block only when the user is logged in.,Exibir bloco apenas quando o cliente estiver logado.
 "Show button add to wishlist in frequently bought together list products.","Exibir botão de adicionar a lista de desejos nos blocos de produtos comprados frequentemente juntos."
 "Show quantity products to add to cart in frequently bought together list products","Exibe a quantidade de produtos para adicionar no carrinho no bloco de frequentemente comprados juntos."
 Qty,Qtd
+Add to Compare List,Adicionar a lista de comparação
+All selected in cart,Adicionar selecionados ao carrinho
+"Show button add to compare in frequently bought together list products.","Exibir botão de adicionar a lista de comparação na lista de produtos frequentemente comprados juntos."
+"Show quantity products to add to cart in frequently bought together list products.","Exibir quantidade dos produtos para adicionar ao carrinho na lista de produtos frequentemente comprados juntos."
+Cards Configuration,Configuração dos Cards
+Show Wishlist,Exibir Botão Lista de Compras
+Show Compare,Exibir Botão Lista de Comparação
+Show Qty Products,Exibir Qtd de Produtos

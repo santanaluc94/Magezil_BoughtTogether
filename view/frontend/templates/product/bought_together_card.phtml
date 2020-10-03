@@ -34,7 +34,9 @@ $items = $block->getFrequentlyBoughtTogether();
 
         <div class="block-actions">
             <?= $block->escapeHtml(__('Check items to add to the cart or')) ?>
-            <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together"><span id="button_select_all_bought_together"><?= $block->escapeHtml(__('select all')) ?></span></button>
+            <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together">
+                <?= $block->escapeHtml(__('select all')) ?>
+            </button>
             <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addProductsSelectedInCart') ?>" method="post">
                 <button type="submit" class="action to cart primary" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
                 <input id="product_ids" name="productIds" hidden />
@@ -66,8 +68,8 @@ $items = $block->getFrequentlyBoughtTogether();
 
                                     <?php if (!$_item->getRequiredOptions()) : ?>
                                         <div class="field choice bought-together">
-                                            <input type="checkbox" class="checkbox-bought-together" id="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>" name="similar_products[]" value="<?= $block->escapeHtmlAttr($_item->getId()) ?>" />
-                                            <label class="label" for="bought-together-checkbox<?= $block->escapeHtmlAttr($_item->getId()) ?>"><span><?= $block->escapeHtml(__('Add to Cart')) ?></span></label>
+                                            <input type="checkbox" class="checkbox-bought-together" id="bought-together-checkbox_<?= $block->escapeHtmlAttr($_item->getId()) ?>" name="similar_products[]" value="<?= $block->escapeHtmlAttr($_item->getId()) ?>" />
+                                            <label class="label" for="bought-together-checkbox_<?= $block->escapeHtmlAttr($_item->getId()) ?>"><span><?= $block->escapeHtml(__('Add to Cart')) ?></span></label>
                                         </div>
                                     <?php endif; ?>
 

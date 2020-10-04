@@ -1,6 +1,6 @@
 ## Installation
 
-To download the module by composer execute this code bellow.
+To download the module by composer, execute this code bellow.
 
 ```sh
   composer require magezil/module-bought-together

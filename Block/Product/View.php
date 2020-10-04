@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomModules\BoughtTogether\Block\Product;
+namespace Magezil\BoughtTogether\Block\Product;
 
 use Magento\Catalog\Block\Product\Context;
 use Magento\Framework\Data\Helper\PostHelper;
@@ -11,7 +11,7 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollection
 use Magento\Framework\Registry;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductFactory;
-use CustomModules\BoughtTogether\Helper\Data as CustomHelper;
+use Magezil\BoughtTogether\Helper\Data as CustomHelper;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
@@ -23,7 +23,7 @@ use Magento\Catalog\Model\Product;
  * Class View
  *
  * @category Magento
- * @package  CustomModules_BoughtTogether
+ * @package  Magezil_BoughtTogether
  * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
  * @license  NO-LICENSE #
  * @link     http://github.com/santanaluc94

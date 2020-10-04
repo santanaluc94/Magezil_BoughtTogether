@@ -1,3 +1,11 @@
+## Installation
+
+To download the module by composer execute this code bellow.
+
+```sh
+  composer require magezil/module-bought-together
+```
+
 ## Frequently Bought Together
 
 This module adds a block in product page, which insert all products that were bought together with the product on the page. It is possible to edit the title and how many products will display in this block. To enable this module, follow these steps:

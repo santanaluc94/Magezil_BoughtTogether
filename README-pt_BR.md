@@ -1,3 +1,10 @@
+## Installation
+
+Para baixar o módulo via composer, execute o código abaixo.
+
+```sh
+  composer require magezil/module-bought-together
+```
 ## Frequentemente Comprados Juntos
 
 Esse módulo adiciona um bloco na página de produtos, no qual insere todos os produtos que foram comprados frequentemente com o produto da página. É possível editar o título do bloco e quantos produtos serão exibidos nesse bloco. Para habilitar o módulo siga os passos abaixo:

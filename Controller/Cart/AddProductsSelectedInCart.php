@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomModules\BoughtTogether\Controller\Cart;
+namespace Magezil\BoughtTogether\Controller\Cart;
 
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\App\Action\Action;
@@ -18,7 +18,7 @@ use Magento\Framework\Controller\Result\Redirect;
  * Class AddProductsSelectedInCart
  *
  * @category Magento
- * @package  CustomModules_BoughtTogether
+ * @package  Magezil_BoughtTogether
  * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
  * @license  NO-LICENSE #
  * @link     http://github.com/santanaluc94

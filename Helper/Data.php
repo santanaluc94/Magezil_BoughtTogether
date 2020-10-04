@@ -1,6 +1,6 @@
 <?php
 
-namespace CustomModules\BoughtTogether\Helper;
+namespace Magezil\BoughtTogether\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -11,20 +11,20 @@ use Magento\Store\Model\ScopeInterface;
  * Class Data
  *
  * @category Magento
- * @package  CustomModules_BoughtTogether
+ * @package  Magezil_BoughtTogether
  * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
  * @license  NO-LICENSE #
  * @link     http://github.com/santanaluc94
  */
 class Data extends AbstractHelper
 {
-    const MODULE_ENABLE = 'custom_bought_together/general/enable';
-    const BOUGHT_TOGETHER_LOGGED_IN = 'custom_bought_together/general/user_logged';
-    const BOUGHT_TOGETHER_TITLE = 'custom_bought_together/general/title';
-    const BOUGHT_TOGETHER_QUANTITY = 'custom_bought_together/general/products_qty';
-    const SHOW_WISHLIST = 'custom_bought_together/cards_configuration/show_wishlist';
-    const SHOW_COMPARE = 'custom_bought_together/cards_configuration/show_compare';
-    const SHOW_QTY_PRODUCTS = 'custom_bought_together/cards_configuration/qty_products';
+    const MODULE_ENABLE = 'magezil_bought_together/general/enable';
+    const BOUGHT_TOGETHER_LOGGED_IN = 'magezil_bought_together/general/user_logged';
+    const BOUGHT_TOGETHER_TITLE = 'magezil_bought_together/general/title';
+    const BOUGHT_TOGETHER_QUANTITY = 'magezil_bought_together/general/products_qty';
+    const SHOW_WISHLIST = 'magezil_bought_together/cards_configuration/show_wishlist';
+    const SHOW_COMPARE = 'magezil_bought_together/cards_configuration/show_compare';
+    const SHOW_QTY_PRODUCTS = 'magezil_bought_together/cards_configuration/qty_products';
 
     protected $scopeConfig;
     protected $storeManager;

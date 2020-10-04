@@ -2,4 +2,4 @@
 
 use Magento\Framework\Component\ComponentRegistrar;
 
-ComponentRegistrar::register(ComponentRegistrar::MODULE, 'CustomModules_BoughtTogether', __DIR__);
+ComponentRegistrar::register(ComponentRegistrar::MODULE, 'Magezil_BoughtTogether', __DIR__);

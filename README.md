@@ -5,7 +5,7 @@ This module adds a block in product page, which insert all products that were bo
   - Setp 2: Tab _Custom Modules_ -> Section _Frequently Bought Together_ -> Group _General Configuration_
   - Setp 3: Enable Module = Yes
 
-![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/module.jpg)
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/magezil-module.jpg)
 
 ### General settings
 

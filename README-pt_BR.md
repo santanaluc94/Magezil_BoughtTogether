@@ -5,7 +5,7 @@ Esse módulo adiciona um bloco na página de produtos, no qual insere todos os p
   - Passo 2: Tab _Módulos Personalizados_ --> Seção _Frequentemente Comprados Juntos_ --> Grupo _Configurações Gerais_
   - Passo 3: Habilitar Módulo = Sim
 
-![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/modulo.jpg)
+![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/magezil-modulo.jpg)
 
 ### Configurações Gerais
 

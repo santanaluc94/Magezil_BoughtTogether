@@ -1,7 +1,7 @@
 var config = {
     map: {
         '*': {
-            carouselBoughtTogether: 'CustomModules_BoughtTogether/js/carouselBoughtTogether'
+            carouselBoughtTogether: 'Magezil_BoughtTogether/js/carouselBoughtTogether'
         }
     }
 };

@@ -1,10 +1,10 @@
 <?php
 
 /**
- *  @var \CustomModules\BoughtTogether\Block\Product\View $block
+ *  @var \Magezil\BoughtTogether\Block\Product\View $block
  */
 
-use CustomModules\BoughtTogether\Helper\Data;
+use Magezil\BoughtTogether\Helper\Data;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Wishlist\Helper\Data as WishlistData;
@@ -136,7 +136,7 @@ $items = $block->getFrequentlyBoughtTogether();
         {
             "*":
             {
-                "CustomModules_BoughtTogether/js/carouselBoughtTogether": {},
+                "Magezil_BoughtTogether/js/carouselBoughtTogether": {},
                 "Magento_Ui/js/core/app": {
                     "components": {
                         "wishlist": {

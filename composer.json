@@ -1,13 +1,20 @@
 {
-    "name": "module-bought-together",
+    "name": "custom-modules/module-bought-together",
     "description": "Custom module to frequently products Bought Together.",
+    "require": {
+        "php": "~7.1.3||~7.2.0||~7.3.0",
+        "magento/module-sales": "*",
+        "magento/module-customer": "*",
+        "magento/module-catalog": "*"
+    },
     "type": "magento2-module",
+    "version": "1.0.0",
     "autoload": {
         "files": [
             "registration.php"
         ],
         "psr-4": {
-          "CustomModules\\BoughtTogether\\": ""
+            "CustomModules\\BoughtTogether\\": ""
         }
     }
 }

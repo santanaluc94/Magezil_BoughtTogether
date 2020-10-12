@@ -1,3 +1,5 @@
+# Frequently Bought Together
+
 ## Installation
 
 To download the module by composer, execute this code bellow.
@@ -6,12 +8,26 @@ To download the module by composer, execute this code bellow.
   composer require magezil/module-bought-together
 ```
 
-## Frequently Bought Together
+### System Requirements
+
+> **Requires at least:** 2.O
+>
+> **Tested up to:** 2.3
+> 
+> **Requires PHP:** 7.0
+> 
+> **Stable tag**: 1.0
+> 
+> **Licenses:** OSL-3.0/AFL-3.0
+
+---
+
+## Magento Admin
 
 This module adds a block in product page, which insert all products that were bought together with the product on the page. It is possible to edit the title and how many products will display in this block. To enable this module, follow these steps:
-  - Step 1: Magento admin -> Stores -> Settings -> Configurations
-  - Setp 2: Tab _Magezil_ -> Section _Frequently Bought Together_ -> Group _General Configuration_
-  - Setp 3: Enable Module = Yes
+  - **Step 1:** Magento admin -> Stores -> Settings -> Configurations
+  - **Setp 2:** Tab _Magezil_ -> Section _Frequently Bought Together_ -> Group _General Configuration_
+  - **Setp 3:** Enable Module = Yes
 
 ![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/magezil-module.jpg)
 
@@ -33,13 +49,15 @@ This module provides some settings to cards in this block to:
 
 ![ScreenShot](https://github.com/santanaluc94/Magezil_BoughtTogether/blob/master/Readme/cards-settings.jpg)
 
-## Frontend
+---
+
+## Store Frontend
 
 The results of the product page follows below with all settings enabled.
 
-Grid:
+Listing product:
 ![ScreenShot](https://github.com/santanaluc94/Magezil_BoughtTogether/blob/master/Readme/block-frontend.jpg)
 
-Liting product:
+Card product:
 ![ScreenShot](https://github.com/santanaluc94/Magezil_BoughtTogether/blob/master/Readme/listing-product.jpg)
 

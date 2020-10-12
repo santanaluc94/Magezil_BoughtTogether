@@ -1,16 +1,33 @@
-## Installation
+# Frequentemente Comprados Juntos
+
+## Instalação
 
 Para baixar o módulo via composer, execute o código abaixo.
 
 ```sh
   composer require magezil/module-bought-together
 ```
-## Frequentemente Comprados Juntos
+
+### Requisitos do Sistema
+
+> **Versão mínima:** 2.O
+>
+> **Versão desenvolvida:** 2.3
+> 
+> **Versão do PHP:** 7.0
+> 
+> **Versão estável**: 1.0
+> 
+> **Licença:** OSL-3.0/AFL-3.0
+
+---
+
+## Admin do Magento
 
 Esse módulo adiciona um bloco na página de produtos, no qual insere todos os produtos que foram comprados frequentemente com o produto da página. É possível editar o título do bloco e quantos produtos serão exibidos nesse bloco. Para habilitar o módulo siga os passos abaixo:
-  - Passo 1: Magento admin --> Lojas --> Configurações --> Configuração
-  - Passo 2: Tab _Magezil_ --> Seção _Frequentemente Comprados Juntos_ --> Grupo _Configurações Gerais_
-  - Passo 3: Habilitar Módulo = Sim
+  - **Passo 1:** Magento admin --> Lojas --> Configurações --> Configuração
+  - **Passo 2:** Tab _Magezil_ --> Seção _Frequentemente Comprados Juntos_ --> Grupo _Configurações Gerais_
+  - **Passo 3:** Habilitar Módulo = Sim
 
 ![ScreenShot](https://github.com/santanaluc94/CustomModules_BoughtTogether/blob/master/Readme/magezil-modulo.jpg)
 
@@ -32,7 +49,7 @@ Esse módulo fornece algumas configurações para os cards desse bloco:
 
 ![ScreenShot](https://github.com/santanaluc94/Magezil_BoughtTogether/blob/master/Readme/configuracao-card.jpg)
 
-## Loja
+## Loja do Magento
 
 Segue os resultados da página do produto com todas as configurações habilitadas.
 

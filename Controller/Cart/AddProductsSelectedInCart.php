@@ -2,71 +2,56 @@
 
 namespace Magezil\BoughtTogether\Controller\Cart;
 
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\Data\Form\FormKey;
-use Magento\Checkout\Model\Cart;
-use Magento\Catalog\Model\ProductFactory;
-use Magento\Framework\Message\ManagerInterface;
+use Magento\Quote\Model\Quote;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\UrlInterface;
-use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Message\ManagerInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Class AddProductsSelectedInCart
- *
- * @category Magento
- * @package  Magezil_BoughtTogether
- * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
- * @license  NO-LICENSE #
- * @link     http://github.com/santanaluc94
- */
-class AddProductsSelectedInCart extends Action
+class AddProductsSelectedInCart implements ActionInterface
 {
-    protected $formKey;
-    protected $cart;
-    protected $product;
-    protected $messageManager;
-    protected $urlInterface;
-    protected $logger;
+    protected FormKey $formKey;
+    protected Quote $cart;
+    protected ProductRepositoryInterface $productRepository;
+    protected UrlInterface $urlInterface;
+    protected RequestInterface $request;
+    protected ManagerInterface $messageManager;
+    protected LoggerInterface $logger;
 
     public function __construct(
-        Context $context,
         FormKey $formKey,
-        Cart $cart,
-        ProductFactory $productFactory,
-        ManagerInterface $managerInterface,
+        Quote $cart,
+        ProductRepositoryInterface $productRepository,
         UrlInterface $urlInterface,
+        RequestInterface $request,
+        ManagerInterface $managerInterface,
         LoggerInterface $logger
     ) {
         $this->formKey = $formKey;
         $this->cart = $cart;
-        $this->productFactory = $productFactory;
-        $this->messageManager = $managerInterface;
+        $this->productRepository = $productRepository;
         $this->urlInterface = $urlInterface;
+        $this->request = $request;
+        $this->messageManager = $managerInterface;
         $this->logger = $logger;
-        parent::__construct($context);
     }
 
-    /**
-     * Add product to cart
-     */
-    public function execute(): Redirect
+    public function execute(): ResultInterface
     {
-        // Redirect to latest url
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+        $productIds = $this->request->getParam('productIds');
 
-        $productIds = $this->getRequest()->getParam('productIds');
-
-        if ($this->getRequest()->getParam('qty') !== null) {
-            $productQty = $this->getRequest()->getParam('qty');
+        if ($this->request->getParam('qty') !== null) {
+            $productQty = $this->request->getParam('qty');
 
             if ($productQty <= 0) {
                 throw new LocalizedException(__('Invalid product qty.'));
-                return $resultRedirect;
             }
         } else {
             $productQty = 1;
@@ -81,15 +66,16 @@ class AddProductsSelectedInCart extends Action
                 $params = [
                     'form_key' => $this->formKey->getFormKey(),
                     'product_id' => $productId,
-                    'qty'   => $productQty
+                    'qty' => $productQty
                 ];
 
-                $productFactory = $this->productFactory->create();
-                $product = $productFactory->load($productId);
+                $product = $this->productRepository->getById($productId);
 
                 $this->cart->addProduct($product, $params);
-                $message = __('You added ' . $product->getName() . ' to your <a href="' . $url . '">shopping cart.</a>');
-                $this->messageManager->addSuccess($message);
+                $message = __(
+                    'You added ' . $product->getName() . ' to your <a href="' . $url . '">shopping cart.</a>'
+                );
+                $this->messageManager->addSuccessMessage($message);
             }
 
             $this->cart->save();
@@ -101,6 +87,8 @@ class AddProductsSelectedInCart extends Action
             $this->messageManager->addExceptionMessage($exception, __('error.'));
         }
 
-        return $resultRedirect;
+        /** @var Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        return $resultRedirect->setUrl($this->_redirect->getRefererUrl());
     }
 }

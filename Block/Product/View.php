@@ -9,9 +9,9 @@ use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Url\Helper\Data;
 use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
 use Magento\Framework\Registry;
-use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductFactory;
-use Magezil\BoughtTogether\Helper\Data as CustomHelper;
+use Magento\Customer\Model\SessionFactory as CustomerSession;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magezil\BoughtTogether\Model\Config\Source\Options;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
@@ -19,23 +19,14 @@ use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
 use Magento\Sales\Model\Order;
 use Magento\Catalog\Model\Product;
 
-/**
- * Class View
- *
- * @category Magento
- * @package  Magezil_BoughtTogether
- * @author   Lucas Teixeira dos Santos Santana <santanaluc94@gmail.com>
- * @license  NO-LICENSE #
- * @link     http://github.com/santanaluc94
- */
 class View extends ListProduct
 {
-    protected $orderCollectionFactory;
-    protected $registry;
-    protected $customerSession;
-    protected $productFactory;
-    protected $storeManager;
-    protected $productRepository;
+    protected OrderCollectionFactory $orderCollectionFactory;
+    protected Registry $registry;
+    protected CustomerSession $customerSession;
+    protected ProductCollectionFactory $productCollectionFactory;
+    protected Options $boughtTogetherConfig;
+    protected StoreManagerInterface $storeManager;
 
     public function __construct(
         Context $context,
@@ -46,16 +37,16 @@ class View extends ListProduct
         OrderCollectionFactory $orderCollectionFactory,
         Registry $registry,
         CustomerSession $customerSession,
-        ProductFactory $productFactory,
-        CustomHelper $helper,
+        ProductCollectionFactory $productCollectionFactory,
+        Options $boughtTogetherConfig,
         StoreManagerInterface $storeManager,
         $data = []
     ) {
         $this->orderCollectionFactory = $orderCollectionFactory;
         $this->registry = $registry;
         $this->customerSession = $customerSession;
-        $this->productFactory = $productFactory;
-        $this->helper = $helper;
+        $this->productCollectionFactory = $productCollectionFactory;
+        $this->boughtTogetherConfig = $boughtTogetherConfig;
         $this->storeManager = $storeManager;
         parent::__construct(
             $context,
@@ -67,30 +58,21 @@ class View extends ListProduct
         );
     }
 
-    /**
-     * Get Current Product
-     */
     public function getCurrentProduct(): Product
     {
         return $this->registry->registry('current_product');
     }
 
-    /**
-     * Get frequently items bought together
-     */
-    public function getFrequentlyBoughtTogether(): ProductCollection
+    protected function _getProductCollection(): ?ProductCollection
     {
-        // get order collection
-        $ordersCollection = $this->orderCollectionFactory->create();
-        $orders = $ordersCollection->addAttributeToSelect('*');
+        $ordersCollection = $this->orderCollectionFactory->create()
+            ->addAttributeToSelect('*');
 
-        // get current product id
         $productId = (int) $this->getCurrentProduct()->getId();
 
-        // get array with most items bought together
-        $mostBought = $this->getMostBoughtTogether($productId, $orders);
+        $mostBought = $this->getMostBoughtTogether($productId, $ordersCollection);
 
-        $collection = $this->productFactory->create();
+        $collection = $this->productCollectionFactory->create();
         $collection->addMinimalPrice()
             ->addIdFilter($mostBought)
             ->addFinalPrice()
@@ -99,18 +81,13 @@ class View extends ListProduct
             ->addAttributeToSelect('*')
             ->addStoreFilter($this->storeManager->getStore()->getId());
 
-        // set admin qty to show in front
-        if ($this->helper->hasBoughtTogetherProductsQty()) {
-            $collection->setPageSize((int) $this->helper->getBoughtTogetherProductsQty());
+        if ($this->boughtTogetherConfig->hasBoughtTogetherProductsQty()) {
+            $collection->setPageSize((int) $this->boughtTogetherConfig->getBoughtTogetherProductsQty());
         }
 
-        // return array with products sorted
         return $collection;
     }
 
-    /**
-     * Get frequently items bought together
-     */
     private function getMostBoughtTogether(int $id, OrderCollection $orders): array
     {
         $orderItems = [];
@@ -129,18 +106,10 @@ class View extends ListProduct
             }
         }
 
-        // sord the most bought items
         arsort($orderItems);
-
-        // get only id in array index
-        $orderItems = array_keys($orderItems);
-
-        return $orderItems;
+        return array_keys($orderItems);
     }
 
-    /**
-     * Has item in these orders.
-     */
     private function hasItemInOrder(int $id, Order $order): bool
     {
         foreach ($order->getAllItems() as $item) {
@@ -152,26 +121,33 @@ class View extends ListProduct
         return false;
     }
 
-    /**
-     * Is show block in product page
-     */
     public function isShowBlock(): bool
     {
-        // Check module is enable in admin
-        if (!$this->helper->isEnabled()) {
+        if (!$this->boughtTogetherConfig->isEnabled()) {
             return false;
         }
 
-        // Check config is enable and if is true, show block only user is logged in
-        if ($this->helper->isBoughtTogetherLoggedIn()) {
-            return $this->customerSession->isLoggedIn();
+        if ($this->boughtTogetherConfig->isBoughtTogetherLoggedIn()) {
+            $customerSession = $this->customerSession->create();
+            return $customerSession->isLoggedIn();
         }
 
-        // Show block if product were bought together
-        if (count($this->getFrequentlyBoughtTogether($this->getCurrentProduct()->getId())) === 0) {
+        if ($this->getLoadedProductCollection()->getSize() === 0) {
             return false;
         }
 
         return true;
+    }
+
+    public function getBoughtTogetherConfig(): Options
+    {
+        return $this->boughtTogetherConfig;
+    }
+
+    public function getBoughtTogetherTitle(): string
+    {
+        return $this->boughtTogetherConfig->hasBoughtTogetherTitle() ?
+        $this->boughtTogetherConfig->getBoughtTogetherTitle() :
+        __('Frequently Bought Together:');
     }
 }

@@ -2,7 +2,7 @@
     "name": "magezil/module-bought-together",
     "description": "Custom module to frequently products Bought Together.",
     "require": {
-        "php": "~7.1.3||~7.2.0||~7.3.0",
+        "php": "~7.3.0||~7.4.0",
         "magento/module-sales": "*",
         "magento/module-customer": "*",
         "magento/module-catalog": "*"

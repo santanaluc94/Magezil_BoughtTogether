@@ -150,4 +150,9 @@ class View extends ListProduct
         $this->boughtTogetherConfig->getBoughtTogetherTitle() :
         __('Frequently Bought Together:');
     }
+
+    public function getAddProductsSelectedInCartUrl(): string
+    {
+        return $this->getUrl('boughtTogether/cart/addProductsSelectedInCart');
+    }
 }

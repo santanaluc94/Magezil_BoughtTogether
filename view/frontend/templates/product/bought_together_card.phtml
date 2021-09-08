@@ -5,40 +5,43 @@
  */
 
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
-use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\ActionInterface;
 use Magento\Wishlist\Helper\Data as WishlistData;
 use Magento\Catalog\Helper\Product\Compare;
 
 $boughtTogetherConfigs = $this->getBoughtTogetherConfig();
 $title = $block->getBoughtTogetherTitle();
 
-$type = 'bought-together';
 $image = 'category_page_list';
 $templateType = ReviewRendererInterface::SHORT_VIEW;
 ?>
 
 <?php if ($block->isShowBlock()) : ?>
-    <div class="block <?= $type ?>">
-
-        <div class="block-title title">
-            <strong id="block-<?= $type ?>-heading" role="heading" aria-level="2">
+    <section class="block block-bought-together">
+        <header class="block-title title">
+            <strong id="block-bought-together-heading" role="heading" aria-level="2">
                 <?= $title ?>
             </strong>
-        </div>
+        </header>
 
         <div class="block-actions">
             <?= __('Check items to add to the cart or') ?>
+
             <button type="button" class="action select" id="select_all_bought_together" data-role="select-all-bought-together">
                 <?= __('select all') ?>
             </button>
-            <form data-role="tocart-form" action="<?= $block->getUrl('boughtTogether/cart/addProductsSelectedInCart') ?>" method="post">
-                <button type="submit" class="action to cart primary" id="add_all_bought_together"><?= __('All selected in cart') ?></button>
-                <input id="product_ids" name="productIds" hidden />
+
+            <form data-role="tocart-form" action="<?= $block->getAddProductsSelectedInCartUrl() ?>" method="POST">
+                <button type="submit" class="action to cart primary" id="add_all_bought_together">
+                    <?= __('All selected in cart') ?>
+                </button>
+
+                <input id="product_ids" name="productIds" />
             </form>
         </div>
 
-        <div class="block-content content block-content-bought-together" aria-labelledby="block-<?= $type ?>-heading">
-            <div class="products wrapper grid products-grid products-<?= $type ?>">
+        <article class="block-content content block-content-bought-together" aria-labelledby="block-bought-together-heading">
+            <div class="products wrapper grid products-grid products-bought-together">
                 <ol class="products list items product-items">
                     <?php foreach ($block->getLoadedProductCollection() as $_item) : ?>
                         <li class="card-list item product product-item">
@@ -81,18 +84,18 @@ $templateType = ReviewRendererInterface::SHORT_VIEW;
                                                     <form data-role="tocart-form" data-product-sku="<?= $_item->getSku() ?>" action="<?= $postParams['action'] ?>" method="post">
                                                         <?php if ($boughtTogetherConfigs->isShowQtyProducts()) : ?>
                                                             <div class="field qty">
-                                                                <label class="label" for="qty">
+                                                                <label class="label" for="qty_<?= $_item->getId() ?>">
                                                                     <span>
                                                                         <?= __('Qty') ?>
                                                                     </span>
                                                                 </label>
                                                                 <div class="control">
-                                                                    <input type="number" name="qty" id="qty" min="1" value="1" title="<?= __('Qty') ?>" class="input-text qty" />
+                                                                    <input type="number" name="qty" id="qty_<?= $_item->getId() ?>" min="1" value="1" title="<?= __('Qty') ?>" class="input-text qty" data-product-qty="<?= $_item->getProductId() ?>" />
                                                                 </div>
                                                             </div>
                                                         <?php endif; ?>
                                                         <input type="hidden" name="product" value="<?= $postParams['data']['product'] ?>">
-                                                        <input type="hidden" name="<?= Action::PARAM_NAME_URL_ENCODED ?>" value="<?= $postParams['data'][Action::PARAM_NAME_URL_ENCODED] ?>">
+                                                        <input type="hidden" name="<?= ActionInterface::PARAM_NAME_URL_ENCODED ?>" value="<?= $postParams['data'][ActionInterface::PARAM_NAME_URL_ENCODED] ?>">
                                                         <?= $block->getBlockHtml('formkey') ?>
                                                         <button type="submit" title="<?= __('Add to Cart') ?>" class="action tocart primary add-to-cart">
                                                             <span>
@@ -144,13 +147,12 @@ $templateType = ReviewRendererInterface::SHORT_VIEW;
                     <?php endforeach ?>
                 </ol>
             </div>
-        </div>
-    </div>
+        </article>
+    </section>
     <script type="text/x-magento-init">
         {
             "*":
             {
-                "Magezil_BoughtTogether/js/carouselBoughtTogether": {},
                 "Magento_Ui/js/core/app": {
                     "components": {
                         "wishlist": {
@@ -161,4 +163,62 @@ $templateType = ReviewRendererInterface::SHORT_VIEW;
             }
         }
     </script>
+    <script type="text/javascript">
+        require([
+            'jquery'
+        ], function($) {
+
+            // Select all products
+            let boughtTogetherProducts = $('.block-bought-together .block-content-bought-together').find('.product-item'),
+                boughtTogetherSelected = false,
+                productObject = {
+                    products: {}
+                };
+
+            $('body').on('click', '#select_all_bought_together', function() {
+                if (boughtTogetherSelected) {
+                    $.each(boughtTogetherProducts, function(index, item) {
+                        $(item).find('.checkbox-bought-together').prop('checked', false);
+                    });
+
+                    $('#product_ids').val('{}');
+                    boughtTogetherSelected = false;
+                } else {
+                    $.each(boughtTogetherProducts, function(index, item) {
+                        let productId = $(item).find('[data-product-id]').data('product-id'),
+                            productQty = $(item).find('[data-product-qty]').val(),
+                            currentProduct = [];
+
+                        $(item).find('.checkbox-bought-together').prop('checked', true);
+
+                        currentProduct[index] = {
+                            'productId': productId,
+                            'qty': productQty
+                        };
+
+                        Object.assign(productObject.products, currentProduct)
+                    });
+
+                    $('#product_ids').val(JSON.stringify(productObject));
+                    boughtTogetherSelected = true;
+                }
+            });
+
+            $('body').on('click', '.checkbox-bought-together', function(event) {
+                let boughtTogetherProductsSelecteds = JSON.parse($('#product_ids').val()),
+                    productId = (event.target).val();
+
+                    console.log(productId)
+
+                $.each(boughtTogetherProductsSelecteds.products, function(index, product) {
+                    console.log(product.productId)
+                    if (product.productId == productId) {
+                        delete boughtTogetherProductsSelecteds.products[index]
+                    }
+                });
+            });
+        });
+    </script>
 <?php endif; ?>
+
+<!-- "Magezil_BoughtTogether/js/carouselBoughtTogether": {}, -->

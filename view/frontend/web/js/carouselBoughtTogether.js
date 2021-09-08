@@ -15,9 +15,26 @@ define([
     };
 
     // Select all products
-    let selectAllLink = document.getElementById('select_all_bought_together');
-    let similarProductsCheckbox = document.getElementsByClassName('block bought-together')[0].getElementsByClassName('checkbox-bought-together');
-    let button = false;
+    let selectAllLink = $('#select_all_bought_together'),
+        boughtTogetherProducts = $('.block-bought-together .block-content-bought-together').find('.product-item'),
+        button = false,
+        productObject = '{}';
+
+
+    $.each(boughtTogetherProducts, function (index, item) {
+        let productId = $(item).find('[data-product-id]').data('product-id'),
+            productQty = $(item).find('[data-product-qty]').data('product-qty');
+
+        productObject.products[index] = {
+            productId: productId,
+            qty: productQty
+        };
+
+        console.log(index);
+        console.log(productId);
+        console.log(productObject);
+        console.log('----------');
+    });
 
     selectAllLink.onclick = function () {
         if (button) {
@@ -36,7 +53,7 @@ define([
     }
 
     // Insert product ids in input to add to cart
-    let productIds = document.getElementById('product_ids').value;
+    let productIds = $('#product_ids').val();
 
     if (productIds) {
         productIds = productIds.split(',');

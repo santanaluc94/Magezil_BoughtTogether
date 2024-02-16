@@ -2,61 +2,36 @@
 
 namespace Magezil\BoughtTogether\Controller\Cart;
 
-use Magento\Framework\Data\Form\FormKey;
-use Magento\Quote\Model\Quote;
-use Magento\Quote\Api\CartRepositoryInterface;
-use Magento\Checkout\Model\SessionFactory as CheckoutSession;
-
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\UrlInterface;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Psr\Log\LoggerInterface;
 use Magento\Framework\App\ActionInterface;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Quote\Model\Quote;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\LocalizedException;
 
 class AddProductsSelectedInCart implements ActionInterface
 {
-    protected FormKey $formKey;
-    protected Quote $cart;
-    protected CartRepositoryInterface $cartRepository;
-    protected ProductRepositoryInterface $productRepository;
-    protected UrlInterface $urlInterface;
-    protected RequestInterface $request;
-    protected ManagerInterface $messageManager;
-    protected LoggerInterface $logger;
-
     public function __construct(
-        FormKey $formKey,
-        Quote $cart,
-        CartRepositoryInterface $cartRepository,
-        ProductRepositoryInterface $productRepository,
-        UrlInterface $urlInterface,
-        RequestInterface $request,
-        ManagerInterface $managerInterface,
-        LoggerInterface $logger
+        protected \Magento\Framework\Data\Form\FormKey $formKey,
+        protected \Magento\Quote\Api\CartRepositoryInterface $cartRepository,
+        protected \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
+        protected \Magento\Framework\UrlInterface $urlInterface,
+        protected \Magento\Framework\App\RequestInterface $request,
+        protected ResultFactory $resultFactory,
+        protected \Magento\Checkout\Model\SessionFactory $checkoutSession,
+        protected \Magento\Framework\Message\ManagerInterface $messageManager,
+        protected \Psr\Log\LoggerInterface $logger
     ) {
-        $this->formKey = $formKey;
-        $this->cart = $cart;
-        $this->cartRepository = $cartRepository;
-        $this->productRepository = $productRepository;
-        $this->urlInterface = $urlInterface;
-        $this->request = $request;
-        $this->messageManager = $managerInterface;
-        $this->logger = $logger;
-
-        $this->objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->checkoutSession = $this->objectManager->get(CheckoutSession::class);
     }
 
     public function execute(): ResultInterface
     {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
         $productIds = $this->request->getParam('productIds');
 
-        var_dump($this->request->getParams());die;
+        var_dump($this->request->getParams());
+        die;
         if ($this->request->getParam('qty') !== null) {
             $productQty = $this->request->getParam('qty');
 
@@ -71,8 +46,7 @@ class AddProductsSelectedInCart implements ActionInterface
             $selectedItems = explode(",", $productIds);
 
             /** @var Quote $currentCart */
-            $currentCart = $this->checkoutSession->create()
-                ->getQuote();
+            $currentCart = $this->checkoutSession->create()->getQuote();
 
             $url = $this->urlInterface->getUrl('checkout/cart/');
 

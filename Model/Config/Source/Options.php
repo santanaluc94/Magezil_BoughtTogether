@@ -2,8 +2,6 @@
 
 namespace Magezil\BoughtTogether\Model\Config\Source;
 
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Store\Model\ScopeInterface;
 
 class Options
@@ -16,15 +14,10 @@ class Options
     const SHOW_COMPARE = 'magezil_bought_together/cards_configuration/show_compare';
     const SHOW_QTY_PRODUCTS = 'magezil_bought_together/cards_configuration/qty_products';
 
-    protected ScopeConfigInterface $scopeConfig;
-    protected StoreManagerInterface $storeManager;
-
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        StoreManagerInterface $storeManager
+        protected \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
     }
 
     public function isEnabled(): bool

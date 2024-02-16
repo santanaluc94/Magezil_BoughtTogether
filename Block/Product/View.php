@@ -2,18 +2,13 @@
 
 namespace Magezil\BoughtTogether\Block\Product;
 
+use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Block\Product\Context;
 use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Catalog\Model\Layer\Resolver;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Framework\Url\Helper\Data;
-use Magento\Sales\Model\ResourceModel\Order\CollectionFactory as OrderCollectionFactory;
-use Magento\Framework\Registry;
-use Magento\Customer\Model\SessionFactory as CustomerSession;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magezil\BoughtTogether\Model\Config\Source\Options;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Sales\Model\ResourceModel\Order\Collection as OrderCollection;
 use Magento\Sales\Model\Order;
@@ -21,33 +16,20 @@ use Magento\Catalog\Model\Product;
 
 class View extends ListProduct
 {
-    protected OrderCollectionFactory $orderCollectionFactory;
-    protected Registry $registry;
-    protected CustomerSession $customerSession;
-    protected ProductCollectionFactory $productCollectionFactory;
-    protected Options $boughtTogetherConfig;
-    protected StoreManagerInterface $storeManager;
-
     public function __construct(
         Context $context,
         PostHelper $postDataHelper,
         Resolver $layerResolver,
         CategoryRepositoryInterface $categoryRepository,
         Data $urlHelper,
-        OrderCollectionFactory $orderCollectionFactory,
-        Registry $registry,
-        CustomerSession $customerSession,
-        ProductCollectionFactory $productCollectionFactory,
-        Options $boughtTogetherConfig,
-        StoreManagerInterface $storeManager,
+        protected \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
+        protected \Magento\Framework\Registry $registry,
+        protected \Magento\Customer\Model\SessionFactory $customerSession,
+        protected \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
+        protected Options $boughtTogetherConfig,
+        protected \Magento\Store\Model\StoreManagerInterface $storeManager,
         $data = []
     ) {
-        $this->orderCollectionFactory = $orderCollectionFactory;
-        $this->registry = $registry;
-        $this->customerSession = $customerSession;
-        $this->productCollectionFactory = $productCollectionFactory;
-        $this->boughtTogetherConfig = $boughtTogetherConfig;
-        $this->storeManager = $storeManager;
         parent::__construct(
             $context,
             $postDataHelper,
@@ -65,8 +47,7 @@ class View extends ListProduct
 
     protected function _getProductCollection(): ?ProductCollection
     {
-        $ordersCollection = $this->orderCollectionFactory->create()
-            ->addAttributeToSelect('*');
+        $ordersCollection = $this->orderCollectionFactory->create()->addAttributeToSelect('*');
 
         $productId = (int) $this->getCurrentProduct()->getId();
 
@@ -147,8 +128,8 @@ class View extends ListProduct
     public function getBoughtTogetherTitle(): string
     {
         return $this->boughtTogetherConfig->hasBoughtTogetherTitle() ?
-        $this->boughtTogetherConfig->getBoughtTogetherTitle() :
-        __('Frequently Bought Together:');
+            $this->boughtTogetherConfig->getBoughtTogetherTitle() :
+            __('Frequently Bought Together:');
     }
 
     public function getAddProductsSelectedInCartUrl(): string
